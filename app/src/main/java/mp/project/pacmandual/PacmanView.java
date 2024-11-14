@@ -4,9 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.view.View;
+import android.view.SurfaceView;
 
-public class PacmanView extends View {
+public class PacmanView extends SurfaceView {
     private Paint paint;
 
     public PacmanView(Context context) {
@@ -31,22 +31,12 @@ public class PacmanView extends View {
         if (canvas == null) return;
 
         // 미로 그리기
-        drawMaze(canvas, state.maze);
+        drawMaze(canvas, state.map);
         drawPacman(canvas, state.pacmanX, state.pacmanY);
 
         getHolder().unlockCanvasAndPost(canvas);
     }
 
-    private void drawMaze(Canvas canvas, int[][] maze) {
-        for (int y = 0; y < maze.length; y++) {
-            for (int x = 0; x < maze[y].length; x++) {
-                if (maze[y][x] == 1) {
-                    paint.setColor(Color.BLUE);
-                    canvas.drawRect(x * 100, y * 100, x * 100 + 100, y * 100 + 100, paint);
-                }
-            }
-        }
-    }
 
     private void drawPacman(Canvas canvas, int pacmanX, int pacmanY) {
         paint.setColor(Color.YELLOW);
