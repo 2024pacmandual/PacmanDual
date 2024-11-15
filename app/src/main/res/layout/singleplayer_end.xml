@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:padding="16dp">
+
+    <!-- Game Over Text -->
+    <TextView
+        android:id="@+id/gameOverText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:text="GAME OVER"
+        android:textSize="60sp"
+        android:textColor="#FF0000"
+        android:textStyle="bold" />
+
+    <!-- Total Score Text -->
+    <TextView
+        android:id="@+id/totalScoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gameOverText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="TOTAL SCORE: 0"
+        android:textSize="24sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
+
+    <!-- Buttons Layout -->
+    <LinearLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/totalScoreText"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="40dp">
+
+        <!-- Back to Start Screen Button -->
+        <Button
+            android:id="@+id/backToStartButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="홈 화면"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF" />
+
+        <!-- Restart Game Button -->
+        <Button
+            android:id="@+id/restartGameButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="게임 재시작"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginStart="20dp" />
+    </LinearLayout>
+
+</RelativeLayout>

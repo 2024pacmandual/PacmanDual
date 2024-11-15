@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:padding="16dp">
+
+    <!-- Game Title -->
+    <TextView
+        android:id="@+id/gameTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="PACMAN DUAL"
+        android:textSize="64sp"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Game Logo Image -->
+    <ImageView
+        android:id="@+id/gameLogo"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_below="@id/gameTitle"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/game_logo"
+        android:layout_marginBottom="0dp" />
+
+    <!-- Mode Selection: Single Player and Two Player Buttons in a Horizontal Layout -->
+    <LinearLayout
+        android:id="@+id/modeSelection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gameLogo"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="25dp">
+
+        <RadioButton
+            android:id="@+id/singlePlayerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1인 모드"
+            android:textColor="#FFFFFF" />
+
+        <RadioButton
+            android:id="@+id/twoPlayerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2인 모드"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- Start and Exit Buttons in a Horizontal Layout -->
+    <LinearLayout
+        android:id="@+id/actionButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/modeSelection"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_marginTop="0dp">
+
+        <Button
+            android:id="@+id/startGameButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="게임 시작"
+            android:background="#4CAF50"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:id="@+id/exitGameButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="게임 종료"
+            android:background="#F44336"
+            android:textColor="#FFFFFF"
+            android:layout_marginStart="20dp" />
+    </LinearLayout>
+
+</RelativeLayout>
