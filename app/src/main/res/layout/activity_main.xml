@@ -7,13 +7,43 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="177dp"
+        android:layout_height="142dp"
+        tools:layout_editor_absoluteX="625dp"
+        tools:layout_editor_absoluteY="145dp">
+
+        <ImageButton
+            android:id="@+id/buttonLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_action_left"
+            tools:layout_editor_absoluteX="-2dp"
+            tools:layout_editor_absoluteY="50dp" />
+
+        <ImageButton
+            android:id="@+id/buttonDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_action_down"
+            tools:layout_editor_absoluteX="64dp"
+            tools:layout_editor_absoluteY="93dp" />
+
+        <ImageButton
+            android:id="@+id/buttonUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_action_up"
+            tools:layout_editor_absoluteX="64dp"
+            tools:layout_editor_absoluteY="-2dp" />
+
+        <ImageButton
+            android:id="@+id/buttonRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_action_right"
+            tools:layout_editor_absoluteX="127dp"
+            tools:layout_editor_absoluteY="50dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

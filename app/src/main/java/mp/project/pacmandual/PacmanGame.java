@@ -87,7 +87,6 @@ public class PacmanGame {
             this.map = map;
             this.pacmanX = pacmanX;
             this.pacmanY = pacmanY;
-
         }
     }
 }
