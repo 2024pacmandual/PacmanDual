@@ -1,68 +1,72 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000000"
     android:padding="16dp">
 
+    <!-- Game Result -->
     <TextView
         android:id="@+id/gameresultText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="You WIN!"
-        android:textSize="70sp"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold" />
-
-    <!-- Game Over Text -->
-    <TextView
-        android:id="@+id/gameOverText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
-        android:text="GAME OVER"
-        android:textSize="60sp"
-        android:textColor="#FF0000"
+        android:text="GAME RESULT"
+        android:textSize="70sp"
+        android:textColor="#f4ff00"
         android:textStyle="bold" />
 
-    <!-- Total Score Text -->
+    <!-- Single-Player Score -->
     <TextView
         android:id="@+id/totalScoreText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gameOverText"
+        android:layout_below="@id/gameresultText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="YOUR TOTAL SCORE: 0"
         android:textSize="24sp"
         android:textColor="#FFFFFF"
-        android:textStyle="bold" />
+        android:visibility="gone" />
 
-    <TextView
-        android:id="@+id/opptotalScoreText"
+    <!-- Two-Player Scores -->
+    <LinearLayout
+        android:id="@+id/twoPlayerScoreLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/totalScoreText"
+        android:layout_below="@id/gameresultText"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="0dp"
-        android:text="OPPONENT'S TOTAL SCORE: 0"
-        android:textSize="24sp"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold" />
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <!-- Buttons Layout -->
+        <TextView
+            android:id="@+id/player1ScoreText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PLAYER 1 SCORE: 0"
+            android:textSize="24sp"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/player2ScoreText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PLAYER 2 SCORE: 0"
+            android:textSize="24sp"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- Buttons -->
     <LinearLayout
         android:id="@+id/buttonLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/totalScoreText"
+        android:layout_below="@id/twoPlayerScoreLayout"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
         android:layout_marginTop="60dp">
 
-        <!-- Back to Start Screen Button -->
         <Button
             android:id="@+id/backToStartButton"
             android:layout_width="wrap_content"
@@ -71,7 +75,6 @@
             android:background="#4CAF50"
             android:textColor="#FFFFFF" />
 
-        <!-- Restart Game Button -->
         <Button
             android:id="@+id/restartGameButton"
             android:layout_width="wrap_content"
