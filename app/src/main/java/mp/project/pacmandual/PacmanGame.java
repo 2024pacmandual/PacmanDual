@@ -4,6 +4,7 @@ package mp.project.pacmandual;
 import android.view.MotionEvent;
 
 public class PacmanGame {
+    private Ghost ghost;
     private Map map;
     private int pacmanX;
     private int pacmanY;
