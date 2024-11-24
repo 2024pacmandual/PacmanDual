@@ -10,14 +10,16 @@ public class PacmanView extends SurfaceView {
     private Map map;
     private int pacmanX;
     private int pacmanY;
+    private String gameMode;
     private final Paint wallPaint = new Paint();
     private final Paint dotPaint = new Paint();
     private final Paint pacmanPaint = new Paint();
     private final Paint ghostPaint = new Paint();
     private int tileSize = 50;
 
-    public PacmanView(Context context) {
+    public PacmanView(Context context, String gameMode) {
         super(context);
+        this.gameMode = gameMode;
         wallPaint.setColor(Color.BLACK);
         dotPaint.setColor(Color.RED);
         pacmanPaint.setColor(Color.YELLOW);
