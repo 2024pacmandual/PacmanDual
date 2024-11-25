@@ -1,7 +1,5 @@
 package mp.project.pacmandual;
 
-import static mp.project.pacmandual.PacmanGame.ScreenState;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
