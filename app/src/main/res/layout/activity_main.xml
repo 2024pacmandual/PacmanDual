@@ -10,8 +10,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="177dp"
         android:layout_height="142dp"
-        tools:layout_editor_absoluteX="625dp"
-        tools:layout_editor_absoluteY="145dp">
+        tools:layout_editor_absoluteX="538dp"
+        tools:layout_editor_absoluteY="113dp">
 
         <ImageButton
             android:id="@+id/buttonLeft"
