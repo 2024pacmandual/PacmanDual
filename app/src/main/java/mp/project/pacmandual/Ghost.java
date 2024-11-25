@@ -11,7 +11,7 @@ public class Ghost {
         this.ghostY = ghostY;
     }
 
-    public boolean checkout_val_move(int dy, int dx){
+    public boolean validate_move(int dy, int dx){
 
         return false;
     }
