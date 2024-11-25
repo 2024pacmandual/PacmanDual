@@ -33,6 +33,7 @@ public class Map {
         while (true) {
             int cy = random.nextInt(dy);
             int cx = random.nextInt(dx);
+
             if (!grid[cy][cx].isWall() && !grid[cy][cx].hasDot()) {
                 return new int[]{cy, cx};
             }
