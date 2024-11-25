@@ -1,5 +1,9 @@
 package mp.project.pacmandual;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 //******************************************************************************************
 //******************************************************************************************
 // 각 타일을 초기화할 때, -1은 벽, 1은 도트, 0은 빈 타일을 의미함. 고스트와 팩맨 간의 충돌은 따로 구현해야함.
@@ -10,11 +14,45 @@ public class Map {
     private int dy = 0;
     private int dx = 0;
 
+    private int[] pacmanSpawnCoord;  // 팩맨의 초기 스폰 좌표
+    private List<int[]> ghostSpawnsCoords;
+
     public int get_dy() { return dy; }
     public int get_dx() { return dx; }
+    public int[] get_pacmanSpawnCoord() { return pacmanSpawnCoord; }
+    public List<int[]> get_ghostSpawnsCoords() { return ghostSpawnsCoords; }
+
+
     public Tile[][] get_Grid() { return grid; }
     public Tile getTile(int y, int x) {
         return grid[y][x];
+    }
+
+    private int[] _get_pacman_coord(){
+        Random random = new Random();
+        while (true) {
+            int cy = random.nextInt(dy);
+            int cx = random.nextInt(dx);
+            if (!grid[cy][cx].isWall() && !grid[cy][cx].hasDot()) {
+                return new int[]{cy, cx};
+            }
+        }
+    }
+    private List<int[]> _get_ghost_coords(int count) {
+        List<int[]> spawns = new ArrayList<>();
+        Random random = new Random();
+
+        while (spawns.size() < count) {
+            int y = random.nextInt(dy);
+            int x = random.nextInt(dx);
+            int[] possible_spawn_coord = new int[]{y, x};
+
+            if (!grid[y][x].isWall() && !grid[y][x].hasDot() &&
+                    spawns.stream().noneMatch(coord -> coord[0] == y && coord[1] == x)) {
+                spawns.add(possible_spawn_coord);
+            }
+        }
+        return spawns;
     }
 
     private void TileAlloc(int cy, int cx) { //modified from Matrix:alloc
@@ -28,7 +66,7 @@ public class Map {
         TileAlloc(0 ,0);
     }
     // 주어진 2D 배열을 이용해 맵 초기화
-    public Map(int[][] mapArray) {
+    public Map(int[][] mapArray,int n_ghost) {
         TileAlloc(mapArray.length, mapArray[0].length);
         for (int i = 0; i < dy; i++) {
             for (int j = 0; j < dx; j++) {
@@ -49,70 +87,8 @@ public class Map {
                 }
             }
         }
+        pacmanSpawnCoord = _get_pacman_coord();
+        ghostSpawnsCoords = _get_ghost_coords(n_ghost);
     }
 
 }
-
-
-
-//public class Map { //Matrix 클래스 변형
-//    private int dy = 0;
-//    private int dx = 0;
-//    private int[][] array = null;
-//    public int get_dy() { return dy; }
-//    public int get_dx() { return dx; }
-//    public int[][] get_array() { return array; }
-//
-//    private void alloc(int cy, int cx) {
-//        if((cy < 0) || (cx < 0)) throw new IllegalArgumentException("Map alloc : cy and cx must be bigger than 0");
-//        dy = cy;
-//        dx = cx;
-//        array = new int[dy][dx];
-//    }
-//
-//    public Map() { alloc(0, 0);}
-//    public Map(int cy, int cx){
-//        alloc(cy, cx);
-//        for (int y=0; y < cy; y++)
-//            for (int x=0; x < cx; x++)
-//                array[y][x] = 0;
-//    }
-//    public Map(Map obj) {
-//        alloc(obj.dy, obj.dx);
-//        for(int y = 0; y < dy; y++)
-//            for(int x = 0; x < dx; x++)
-//                array[y][x] = obj.array[y][x];
-//    }
-//    public Map(int[][] a) {
-//        alloc(a.length, a[0].length);
-//        for(int y = 0; y < dy; y++)
-//            for(int x = 0; x < dx; x++)
-//                array[y][x] = a[y][x];
-//    }
-//    public Map setMap_lv1(){
-//        int[][] array = new int[7][20];
-//        array[0] = new int[] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-//        array[1] = new int[] {-1, 1, 1, 1, 1, 1, 1, -1, 0, 0, 0, 0, -1, 1, 1, 1, 1, 1, 1, -1};
-//        array[2] = new int[] {-1, 1, 1, 1, -1, 1, 1, -1, 0, 0, 0, 0, -1, 1, 1, -1, 1, 1, 1, -1};
-//        array[3] = new int[] {-1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, -1};
-//        array[4] = new int[] {-1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, -1};
-//        array[5] = new int[] {-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1};
-//        array[6] = new int[] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-//        Map map_rt = new Map(array);
-//        return map_rt;
-//    }
-//    public boolean isWall(int x, int y) {
-//        return array[y][x] == -1;
-//    }
-//
-//    public boolean isDot(int x, int y) {
-//        return array[y][x] == 1;
-//    }
-//
-//    public void collectDot(int x, int y) {
-//        if (isDot(x, y)) {
-//            array[y][x] = 0;  // 도트를 먹은 후 제거
-//        }
-//    }
-//
-//}

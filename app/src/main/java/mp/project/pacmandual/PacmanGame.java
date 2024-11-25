@@ -4,7 +4,7 @@ package mp.project.pacmandual;
 import android.view.MotionEvent;
 
 public class PacmanGame {
-    private Ghost ghost;
+    private Ghost[] ghosts;
     private Map map;
     private int pacmanX;
     private int pacmanY;
@@ -22,6 +22,9 @@ public class PacmanGame {
 
     private void initializeMap(int level) {
         int[][] array;
+        int n_ghost;
+        if (level>2) n_ghost = 4;
+        else n_ghost = 3;
         switch (level){
             //case 1:
             //case 2:
@@ -37,7 +40,7 @@ public class PacmanGame {
                 array[6] = new int[] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
         }
 
-        map = new Map(array); //setMap_lv3까지 계획
+        map = new Map(array, n_ghost); //setMap_lv3까지 계획
     }
 
     public void movePacman(int dy, int dx) {
