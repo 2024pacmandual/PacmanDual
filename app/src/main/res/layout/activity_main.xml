@@ -8,42 +8,49 @@
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="177dp"
-        android:layout_height="142dp"
-        tools:layout_editor_absoluteX="538dp"
-        tools:layout_editor_absoluteY="113dp">
+        android:layout_width="276dp"
+        android:layout_height="210dp"
+        tools:layout_editor_absoluteX="439dp"
+        tools:layout_editor_absoluteY="91dp">
 
         <ImageButton
             android:id="@+id/buttonLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_action_left"
-            tools:layout_editor_absoluteX="-2dp"
-            tools:layout_editor_absoluteY="50dp" />
+            tools:layout_editor_absoluteX="5dp"
+            tools:layout_editor_absoluteY="84dp" />
 
         <ImageButton
             android:id="@+id/buttonDown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_action_down"
-            tools:layout_editor_absoluteX="64dp"
-            tools:layout_editor_absoluteY="93dp" />
+            tools:layout_editor_absoluteX="114dp"
+            tools:layout_editor_absoluteY="151dp" />
 
         <ImageButton
             android:id="@+id/buttonUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_action_up"
-            tools:layout_editor_absoluteX="64dp"
-            tools:layout_editor_absoluteY="-2dp" />
+            tools:layout_editor_absoluteX="114dp"
+            tools:layout_editor_absoluteY="7dp" />
 
         <ImageButton
             android:id="@+id/buttonRight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_action_right"
-            tools:layout_editor_absoluteX="127dp"
-            tools:layout_editor_absoluteY="50dp" />
+            tools:layout_editor_absoluteX="224dp"
+            tools:layout_editor_absoluteY="83dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <mp.project.pacmandual.PacmanView
+        android:id="@+id/pacmanView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="81dp"
+        tools:layout_editor_absoluteY="168dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
