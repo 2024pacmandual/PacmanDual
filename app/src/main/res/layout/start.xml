@@ -20,12 +20,12 @@
     <!-- Game Logo Image -->
     <ImageView
         android:id="@+id/gameLogo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="125dp"
+        android:layout_height="115dp"
         android:layout_below="@id/gameTitle"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/game_logo"
-        android:layout_marginBottom="0dp" />
+        android:layout_marginBottom="0dp"
+        android:src="@drawable/game_logo" />
 
     <!-- Mode Selection: Single Player and Two Player Buttons in a Horizontal Layout -->
     <LinearLayout
@@ -35,7 +35,7 @@
         android:layout_below="@id/gameLogo"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        android:layout_marginTop="25dp">
+        android:layout_marginTop="15dp">
 
         <RadioButton
             android:id="@+id/singlePlayerButton"
