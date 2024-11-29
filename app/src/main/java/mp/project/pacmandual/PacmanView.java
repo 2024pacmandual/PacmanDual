@@ -1,28 +1,46 @@
 package mp.project.pacmandual;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.view.SurfaceView;
+import android.util.AttributeSet;
+import android.view.View;
 
-public class PacmanView extends SurfaceView {
+public class PacmanView extends View {
+    private Bitmap pacmanBitmap;
+    private Bitmap ghostBitmap;
     private Map map;
-    private int pacmanX;
-    private int pacmanY;
+    private int pacmanX, pacmanY;
     private String gameMode;
     private final Paint wallPaint = new Paint();
-    private final Paint dotPaint = new Paint();
+    private Paint dotPaint;
     private final Paint pacmanPaint = new Paint();
     private final Paint ghostPaint = new Paint();
     private int tileSize = 50;
 
+    public PacmanView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
     public PacmanView(Context context, String gameMode) {
         super(context);
         this.gameMode = gameMode;
-        wallPaint.setColor(Color.BLACK);
-        dotPaint.setColor(Color.RED);
-        pacmanPaint.setColor(Color.YELLOW);
+        init();
+    }
+
+    public String getGameMode() {
+        return gameMode;
+    }
+
+
+
+    private void init() {
+        pacmanBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pacman);
+        ghostBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ghost);
+        dotPaint = new Paint();
+        dotPaint.setColor((0xFFFFD700));
     }
 
 
