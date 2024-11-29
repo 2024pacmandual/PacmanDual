@@ -2,9 +2,9 @@ package mp.project.pacmandual;
 
 import android.app.Activity;
 import android.content.Context;
-
-import android.graphics.Color;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
