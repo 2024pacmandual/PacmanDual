@@ -2,6 +2,8 @@ package mp.project.pacmandual;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
+
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,18 +37,8 @@ public class MainActivity extends AppCompatActivity {
         Log.i("MainActivity","bf setcont");
         setContentView(R.layout.activity_main);
 
+        Log.i("MainActivity", "onCreate");
 
-        // 게임 시작 버튼 클릭 시
-        //startGameButton.setOnClickListener(v -> {
-        //    game = new PacmanGame();
-        //    pacmanView = new PacmanView(MainActivity.this);
-        //    setContentView(pacmanView);  // 게임 화면으로 전환
-        //});
-
-        // 게임 종료 버튼 클릭 시
-        //exitGameButton.setOnClickListener(v -> {
-        //    finish();  // 앱 종료
-        //});
     }
 
 //    @Override

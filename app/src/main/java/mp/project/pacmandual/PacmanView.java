@@ -2,6 +2,7 @@ package mp.project.pacmandual;
 
 import android.app.Activity;
 import android.content.Context;
+
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
@@ -9,8 +10,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
 
+
 public class PacmanView extends View {
-    private Map map; // 맵 객체
+    private Bitmap pacmanBitmap;
+    private Bitmap ghostBitmap;
+    private Map map;
+    private int pacmanX, pacmanY;
+
     private String gameMode;
 
     private ImageButton buttonUp;
@@ -19,19 +25,18 @@ public class PacmanView extends View {
     private ImageButton buttonRight;
 
     private final Paint wallPaint = new Paint();
-    private final Paint dotPaint = new Paint();
+    private Paint dotPaint;
     private final Paint pacmanPaint = new Paint();
     private final Paint ghostPaint = new Paint();
+
+    public PacmanView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
     public PacmanView(Context context, String gameMode) {
         super(context);
         this.gameMode = gameMode;
 
-        // 페인트 설정
-        wallPaint.setColor(Color.BLACK);
-        dotPaint.setColor(Color.RED);
-        pacmanPaint.setColor(Color.YELLOW);
-        ghostPaint.setColor(Color.BLUE);
 
         // 버튼 초기화 및 이벤트 리스너 설정
         if (context instanceof Activity) {
