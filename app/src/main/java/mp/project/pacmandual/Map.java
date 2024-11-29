@@ -92,4 +92,5 @@ public class Map {
         ghostSpawnsCoords = _get_ghost_coords(n_ghost);
     }
 
+
 }
