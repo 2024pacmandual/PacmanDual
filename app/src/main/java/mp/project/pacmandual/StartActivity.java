@@ -2,10 +2,10 @@ package mp.project.pacmandual;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class StartActivity extends AppCompatActivity {
@@ -39,6 +39,7 @@ public class StartActivity extends AppCompatActivity {
         startGameButton.setOnClickListener(v -> {
             if (selectedMode == null) {
                 Toast.makeText(StartActivity.this, "모드를 선택해주세요.", Toast.LENGTH_SHORT).show();
+                selectedMode = "SINGLE";
             } else {
                 Intent intent = new Intent(StartActivity.this, MainActivity.class);
                 intent.putExtra("GAME_MODE", selectedMode);
