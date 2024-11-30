@@ -23,6 +23,15 @@ public class Ghost {
         this.ghostX = ghostX;
         this.ghostY = ghostY;
     }
+
+    public int getGhostX() {
+        return ghostX;
+    }
+
+    public int getGhostY() {
+        return ghostY;
+    }
+
     public void move(Map map) {
         int dy = map.get_dy();
         int dx = map.get_dx();
