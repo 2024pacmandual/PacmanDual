@@ -18,7 +18,7 @@ public class Ghost {
         }
     }
 
-    public Ghost(Map map, int speed, int ghostX, int ghostY){
+    public Ghost(Map map, int speed, int ghostY, int ghostX){
         this.GHOST_SPEED = speed;
         this.ghostX = ghostX;
         this.ghostY = ghostY;

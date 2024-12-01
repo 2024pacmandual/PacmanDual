@@ -1,7 +1,7 @@
 package mp.project.pacmandual;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
     private PacmanGame game;
     private PacmanView pacmanView;
+
+    ImageView buttonUp;
+    ImageView buttonDown;
+    ImageView buttonLeft;
+    ImageView buttonRight;
 
     private String gameMode;
 
@@ -40,10 +45,41 @@ public class MainActivity extends AppCompatActivity {
         }
 
         game = new PacmanGame(); // gameMode에 따라 게임을 초기화
+        //pacmanView = new PacmanView(this);
+
+        setContentView(R.layout.activity_main);
+
+        buttonUp = findViewById(R.id.buttonUp);
+        buttonDown = findViewById(R.id.buttonDown);
+        buttonLeft = findViewById(R.id.buttonLeft);
+        buttonRight = findViewById(R.id.buttonRight);
+
         pacmanView = new PacmanView(this);
-        pacmanView.setPacmanGame(game);
-        setContentView(pacmanView);
-        startGameLoop();
+        pacmanView = findViewById(R.id.pacmanView);
+        //setContentView(pacmanView);
+
+        buttonUp.setOnTouchListener((v, event) -> {
+            game.onTouchAccept(event, "UP");
+            v.performClick();
+            return true; // 이벤트를 소비
+        });
+
+        buttonDown.setOnTouchListener((v, event) -> {
+            game.onTouchAccept(event, "DOWN");
+            v.performClick();
+            return true;
+        });
+
+        buttonLeft.setOnTouchListener((v, event) -> {
+            game.onTouchAccept(event, "LEFT");
+            return true;
+        });
+
+        buttonRight.setOnTouchListener((v, event) -> {
+            game.onTouchAccept(event, "RIGHT");
+            return true;
+        });
+        //startGameLoop();
     }
 
     @Override
@@ -71,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 while (isRunning) {
                     try {
                         game.updateGameState();
+                        pacmanView.getScreenState(game.getScreen());
                         runOnUiThread(() -> {
                             pacmanView.invalidate(); // PacmanView의 onDraw() 호출
                         });
@@ -84,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 //
 //    @Override
 //    public boolean onTouchEvent(MotionEvent event) {
