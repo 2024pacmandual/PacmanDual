@@ -11,8 +11,8 @@ import java.util.Random;
 //******************************************************************************************
 public class Map {
     private Tile[][] grid;  // 맵을 구성하는 타일들의 2D 배열
-    private int dy = 0;
-    private int dx = 0;
+    private int dy;
+    private int dx;
 
     private int[] pacmanSpawnCoord;  // 팩맨의 초기 스폰 좌표
     private List<int[]> ghostSpawnsCoords;
@@ -48,7 +48,7 @@ public class Map {
             int x = random.nextInt(dx);
             int[] possible_spawn_coord = new int[]{y, x};
 
-            if (!grid[y][x].isWall() && !grid[y][x].hasDot() &&
+            if (!grid[y][x].isWall() && grid[y][x].hasDot() &&
                     spawns.stream().noneMatch(coord -> coord[0] == y && coord[1] == x)) {
                 spawns.add(possible_spawn_coord);
             }
@@ -90,6 +90,11 @@ public class Map {
         }
         pacmanSpawnCoord = _get_pacman_coord();
         ghostSpawnsCoords = _get_ghost_coords(n_ghost);
+//        for (int[] coord : ghostSpawnsCoords) {
+//            Log.d("PacmanGame", "Ghost spawn location: " + Arrays.toString(coord));
+//        }
+//        Log.d("map", "dy" + dy);
+//        Log.d("map", "dx" + dx);
     }
 
 }
