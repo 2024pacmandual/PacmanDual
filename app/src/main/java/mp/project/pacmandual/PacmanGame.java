@@ -3,8 +3,11 @@ package mp.project.pacmandual;
 
 import android.view.MotionEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PacmanGame {
-    private Ghost[] ghosts;
+    private List<Ghost> ghosts;
     private Map map;
     private int pacmanX;
     private int pacmanY;
@@ -17,7 +20,9 @@ public class PacmanGame {
         this.pacmanX = 1; // Pacman의 초기 X 위치
         this.pacmanY = 1; // Pacman의 초기 Y 위치
         this.score = 0;
+        ghosts = new ArrayList<>();
         initializeMap(1);
+        initializeGhosts();
     }
 
     private void initializeMap(int level) {
@@ -43,6 +48,33 @@ public class PacmanGame {
         map = new Map(array, n_ghost); //setMap_lv3까지 계획
     }
 
+    public int getPacmanX() {
+        return pacmanX;
+    }
+
+    public int getPacmanY() {
+        return pacmanY;
+    }
+
+    public Tile[][] getMapArray(){
+        return map.get_Grid();
+    }
+    private void initializeGhosts() {
+        ghosts.add(new Ghost(map, 1, 1, 1));
+        ghosts.add(new Ghost(map, 1, 18, 1));
+        ghosts.add(new Ghost(map, 1, 1, 5));
+    }
+    public List<Ghost> getGhosts(){
+        return ghosts;
+    }
+
+    public void updateGameState() {
+       // movePacman();
+        for (Ghost ghost : ghosts) {
+            ghost.move(map);
+        }
+        //충돌 여부 체크 추가하기
+    }
     public void movePacman(int dy, int dx) {
         // Pacman의 새로운 위치 계산
         int newY = pacmanY + dy;
