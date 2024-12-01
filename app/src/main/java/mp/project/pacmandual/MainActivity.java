@@ -2,8 +2,6 @@ package mp.project.pacmandual;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
-
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -96,6 +94,6 @@ public class MainActivity extends AppCompatActivity {
 //
 //    private void updateView() {
 //        PacmanGame.ScreenState state = game.getScreen(); // 현재 게임 상태를 가져옴
-//         // 게임 상태를 뷰에 전달하여 업데이트
+//        pacmanview.update(state) // 게임 상태를 뷰에 전달하여 업데이트
 //    }
 }
