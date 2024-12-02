@@ -2,7 +2,6 @@
 package mp.project.pacmandual;
 
 import android.util.Log;
-import android.view.MotionEvent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,9 +17,11 @@ public class PacmanGame {
     private String inputButton = "NONE";
     private int timeAfterCaught = 0;
 
-    private List<Ghost> ghosts;
+
+    private final List<Ghost> ghosts;
     private Map map;
-    private LifeManager lifeCounter;
+    private final LifeManager lifeCounter;
+    private final StageContainer stage = new StageContainer();;
 
     public PacmanTimer timer;
 
@@ -28,16 +29,19 @@ public class PacmanGame {
 
 
     public PacmanGame(int level) {
-        this.score = 0;
+
         ghosts = new ArrayList<>();
+
         initializeMap(level);
+        this.score = 0;
 
         int[] pacmanSpawn = map.get_pacmanSpawnCoord();
         pacmanY = pacmanSpawn[0];
         pacmanX = pacmanSpawn[1];
         lifeCounter = new LifeManager();
-
         timer = new PacmanTimer(300);
+
+
     }
 
     private void initializeMap(int level) {
@@ -45,20 +49,8 @@ public class PacmanGame {
         int n_ghost;
         if (level > 2) n_ghost = 4;
         else n_ghost = 3;
-        switch (level) {
-            //case 1:
-            //case 2:
-            //case 3:
-            default:
-                array = new int[7][20];
-                array[0] = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-                array[1] = new int[]{-1, 1, 1, 1, 1, 1, 1, -1, 0, 0, 0, 0, -1, 1, 1, 1, 1, 1, 1, -1};
-                array[2] = new int[]{-1, 1, 1, 1, -1, 1, 1, -1, 0, 0, 0, 0, -1, 1, 1, -1, 1, 1, 1, -1};
-                array[3] = new int[]{-1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, -1};
-                array[4] = new int[]{-1, 1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1, 1, 1, -1};
-                array[5] = new int[]{-1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1};
-                array[6] = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
-        }
+
+        array = stage.getMapArray(level);
 
         map = new Map(array, n_ghost); //setMap_lv3까지 계획
         List<int[]> coords = map.get_ghostSpawnsCoords();
@@ -142,22 +134,8 @@ public class PacmanGame {
     }
 
 
-    public boolean onTouchAccept(MotionEvent event, String action){
-        switch (action) {
-            case "UP":
-                inputButton = "UP";
-                break;
-            case "DOWN":
-                inputButton = "DOWN";
-                break;
-            case "LEFT":
-                inputButton = "LEFT";
-                break;
-            case "RIGHT":
-                inputButton = "RIGHT";
-                break;
-        }
-        return false; // 다른 이벤트는 무시
+    public void onTouchAccept(String action){
+        inputButton = action;
     };
 
     public boolean gameOnRun(){

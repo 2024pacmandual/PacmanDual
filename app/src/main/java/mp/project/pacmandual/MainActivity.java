@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             gameMode = "SINGLE"; // 기본값 설정
         }
 
-        game = new PacmanGame(1); // gameMode에 따라 게임을 초기화
+        game = new PacmanGame(3); // gameMode에 따라 게임을 초기화
         //pacmanView = new PacmanView(this);
 
         setContentView(R.layout.activity_main);
@@ -60,24 +60,24 @@ public class MainActivity extends AppCompatActivity {
         //setContentView(pacmanView);
 
         buttonUp.setOnTouchListener((v, event) -> {
-            game.onTouchAccept(event, "UP");
+            game.onTouchAccept("UP");
             v.performClick();
             return true;
         });
 
         buttonDown.setOnTouchListener((v, event) -> {
-            game.onTouchAccept(event, "DOWN");
+            game.onTouchAccept("DOWN");
             v.performClick();
             return true;
         });
 
         buttonLeft.setOnTouchListener((v, event) -> {
-            game.onTouchAccept(event, "LEFT");
+            game.onTouchAccept("LEFT");
             return true;
         });
 
         buttonRight.setOnTouchListener((v, event) -> {
-            game.onTouchAccept(event, "RIGHT");
+            game.onTouchAccept("RIGHT");
             return true;
         });
         //startGameLoop();
