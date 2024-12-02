@@ -6,7 +6,7 @@
 
     <!-- Game Result -->
     <TextView
-        android:id="@+id/gameresultText"
+        android:id="@+id/gameResultText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -21,20 +21,20 @@
         android:id="@+id/totalScoreText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gameresultText"
+        android:layout_below="@id/gameResultText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="YOUR TOTAL SCORE: 0"
         android:textSize="24sp"
-        android:textColor="#FFFFFF"
-        android:visibility="gone" />
+        android:textColor="#FFFFFF" />
+        <!--android:visibility="gone"-->
 
     <!-- Two-Player Scores -->
     <LinearLayout
         android:id="@+id/twoPlayerScoreLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/gameresultText"
+        android:layout_below="@id/gameResultText"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:orientation="vertical"

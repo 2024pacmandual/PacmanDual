@@ -1,5 +1,6 @@
 package mp.project.pacmandual;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -81,19 +82,27 @@ public class MainActivity extends AppCompatActivity {
         });
         //startGameLoop();
     }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        isRunning = true;
+        game.timer.startTimer();
+    }
 
     @Override
     protected void onPause() {
         super.onPause();
         isRunning = false;
+        game.timer.stopTimer(0);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        isRunning = true;
-        startGameLoop();
-        // 초기 상태로 뷰 업데이트 (필요시)
+        if (game.timer.getTimerFlag() > 0) {
+            isRunning = true;
+            startGameLoop();
+        }
     }
 
     protected void onDestroy() {
@@ -108,6 +117,16 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         game.updateGameState();
                         pacmanView.getScreenState(game.getScreen());
+
+                        if (!game.gameOnRun()){
+                            isRunning = false;
+
+                            Intent intent = new Intent(this, EndActivity.class);
+                            intent.putExtra("GAME_RESULT", game.getResult());
+                            startActivity(intent);
+                            finish();
+                        }
+
                         runOnUiThread(() -> {
                             pacmanView.invalidate(); // PacmanView의 onDraw() 호출
                         });
