@@ -13,9 +13,11 @@ public class PacmanGame {
     private Map map;
     private int pacmanX;
     private int pacmanY;
-    private int PACMAN_SPEED = 1;
+
     private int score;
     private LifeManager lifeCounter;
+
+
 
     private String inputButton = "NONE";
 
@@ -67,10 +69,12 @@ public class PacmanGame {
 
     public void updateGameState() {
         movePacman();
+
+
         for (Ghost ghost : ghosts) {
-            ghost.move(map);
+            ghost.move(map); // 고스트는 매번 타일 간 이동 후 동작
         }
-        //충돌 여부 체크 추가하기
+
         if(getCaught()) lifeCounter.decreaseLife(); //ghost한테 잡힘
     }
 
@@ -98,6 +102,7 @@ public class PacmanGame {
             }
             pacmanX = newX;
             pacmanY = newY;
+
         }
         //inputButton = "NONE"; //테스트용 코드
 
@@ -125,6 +130,7 @@ public class PacmanGame {
         }
         return false;
     }
+
 
     public boolean onTouchAccept(MotionEvent event, String action){
         switch (action) {
