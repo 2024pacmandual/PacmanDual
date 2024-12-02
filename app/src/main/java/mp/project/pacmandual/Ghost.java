@@ -7,7 +7,6 @@ import java.util.Random;
 public class Ghost {
     private int ghostX;
     private int ghostY;
-    private int GHOST_SPEED = 1; //default = 1
 
     private static final Random rand = new Random();
 
@@ -18,8 +17,7 @@ public class Ghost {
         }
     }
 
-    public Ghost(Map map, int speed, int ghostY, int ghostX){
-        this.GHOST_SPEED = speed;
+    public Ghost(Map map, int ghostY, int ghostX){
         this.ghostX = ghostX;
         this.ghostY = ghostY;
     }
@@ -41,6 +39,7 @@ public class Ghost {
         List<int[]> possibleMoves = new ArrayList<>();
 
         // 이동 가능한 방향 추가
+        possibleMoves.add(new int[] {cy, cx}); //가만히
         checkAndAddMove(possibleMoves, map, cy + 1, cx, dy, dx); // 아래
         checkAndAddMove(possibleMoves, map, cy - 1, cx, dy, dx); // 위
         checkAndAddMove(possibleMoves, map, cy, cx - 1, dy, dx); // 왼쪽

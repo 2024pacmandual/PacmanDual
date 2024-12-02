@@ -16,20 +16,21 @@ public class PacmanGame {
     private int score;
     private boolean RunningFlag = true;
     private String inputButton = "NONE";
+    private int timeAfterCaught = 0;
 
     private List<Ghost> ghosts;
     private Map map;
     private LifeManager lifeCounter;
+
     public PacmanTimer timer;
 
 
-    public PacmanGame() {
-        //this.map = new Map();
-        // 나중에 case나 if문으로 각 레벨별 팩맨의 초기위치 설정
 
+
+    public PacmanGame(int level) {
         this.score = 0;
         ghosts = new ArrayList<>();
-        initializeMap(1);
+        initializeMap(level);
 
         int[] pacmanSpawn = map.get_pacmanSpawnCoord();
         pacmanY = pacmanSpawn[0];
@@ -66,7 +67,7 @@ public class PacmanGame {
             Log.d("coords", "coord :  " + Arrays.toString(coord));
         }
         for (int[] coord : coords) {
-            ghosts.add(new Ghost(map, 1, coord[0], coord[1]));
+            ghosts.add(new Ghost(map, coord[0], coord[1]));
         }
 
     }
@@ -81,7 +82,11 @@ public class PacmanGame {
             ghost.move(map); // 고스트는 매번 타일 간 이동 후 동작
         }
 
-        if(getCaught()) lifeCounter.decreaseLife(); //ghost한테 잡힘
+        if(getCaught() && timeAfterCaught > 4) {
+            lifeCounter.decreaseLife();
+            timeAfterCaught = 0;
+        } //ghost한테 잡힘
+        timeAfterCaught++;
     }
 
 
@@ -108,7 +113,6 @@ public class PacmanGame {
             }
             pacmanX = newX;
             pacmanY = newY;
-
         }
         //inputButton = "NONE"; //테스트용 코드
 
@@ -168,7 +172,8 @@ public class PacmanGame {
                 pacmanY,        // 팩맨의 Y 좌표
                 ghosts,         // 고스트 리스트
                 score,           // 현재 점수
-                lifeCounter.getLives()
+                lifeCounter.getLives(),
+                timer.getRemainingTime()
         );
     }
 
@@ -187,15 +192,17 @@ public class PacmanGame {
         private final int pacmanY;       // 팩맨의 Y 좌표
         private final List<Ghost> ghosts; // 고스트 리스트
         private final int score;         // 현재 점수
-        private int life;
+        private final int life;
+        private final int time;
         // ScreenState 생성자
-        public ScreenState(Tile[][] mapArray, int pacmanX, int pacmanY, List<Ghost> ghosts, int score, int life) {
+        public ScreenState(Tile[][] mapArray, int pacmanX, int pacmanY, List<Ghost> ghosts, int score, int life, int time) {
             this.mapArray = mapArray;
             this.pacmanX = pacmanX;
             this.pacmanY = pacmanY;
             this.ghosts = ghosts;
             this.score = score;
             this.life = life;
+            this.time = time;
         }
 
 
@@ -222,6 +229,14 @@ public class PacmanGame {
         // 현재 점수 반환
         public int getScore() {
             return score;
+        }
+
+        public int getLife() {
+            return life;
+        }
+
+        public int getTime() {
+            return time;
         }
     }
 }

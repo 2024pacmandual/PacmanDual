@@ -39,13 +39,13 @@ public class EndActivity extends AppCompatActivity {
 
 
         backToStartButton.setOnClickListener(v -> {
-            Intent intent = new Intent(EndActivity.this, StartActivity.class);
-            startActivity(intent);
+            finish();
         });
 
         restartGameButton.setOnClickListener(v -> {
             Intent intent = new Intent(EndActivity.this, MainActivity.class);
             startActivity(intent);
+            finish();
         });
 
 

@@ -58,7 +58,7 @@ public class Map {
         return spawns;
     }
 
-    private void TileAlloc(int cy, int cx) { //modified from Matrix:alloc
+    private void TileAlloc(int cy, int cx) { //modified from Tetris Matrix:alloc
         if((cy < 0) || (cx < 0)) throw new IllegalArgumentException("Map alloc : cy and cx must be bigger than 0");
         dy = cy;
         dx = cx;
