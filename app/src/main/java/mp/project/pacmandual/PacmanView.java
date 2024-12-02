@@ -15,6 +15,7 @@ import java.util.Map;
 public class PacmanView extends View {
     private Bitmap pacmanBitmap;
     private Bitmap ghostBitmap;
+    private Bitmap lifeBitmap;
 
     private PacmanGame.ScreenState screen;
     private String gameMode;
@@ -50,6 +51,7 @@ public class PacmanView extends View {
     public void init() {
         pacmanBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pacman);
         ghostBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ghost);
+        lifeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.heart);
 
         wallPaint = new Paint();
         wallPaint.setColor(0xFF0000FF); // 파란색 (벽)
@@ -95,6 +97,9 @@ public class PacmanView extends View {
         drawMap(canvas);
         drawPacman(canvas);
         drawGhosts(canvas);
+        drawLives(canvas);
+        drawScore(canvas);
+        drawTimer(canvas);
 
         // 애니메이션 업데이트
         updateAnimation();
@@ -133,6 +138,38 @@ public class PacmanView extends View {
                 canvas.drawBitmap(ghostBitmap, pos[0], pos[1], null);
             }
         }
+    }
+
+    private void drawLives(Canvas canvas) {
+        int lifeCount = screen.getLife(); // 남은 라이프 수
+        int startX = 20; // 시작 X 좌표
+        int startY = 20; // 시작 Y 좌표
+        int spacing = 10; // 아이콘 간 간격
+
+        for (int i = 0; i < lifeCount; i++) {
+            int x = startX + i * (lifeBitmap.getWidth() + spacing);
+            canvas.drawBitmap(lifeBitmap, x, startY, null);
+        }
+    }
+
+    private void drawScore(Canvas canvas) {
+        Paint scorePaint = new Paint();
+        scorePaint.setColor(0xFF006600);
+        scorePaint.setTextSize(50);
+        scorePaint.setFakeBoldText(true);
+
+        String scoreText = "Score: " + screen.getScore();
+        canvas.drawText(scoreText, 20, 100, scorePaint); // 화면 상단에 점수 표시
+    }
+
+    private void drawTimer(Canvas canvas) {
+        Paint timerPaint = new Paint();
+        timerPaint.setColor(0xFFFF0000); // 빨간색
+        timerPaint.setTextSize(50); // 텍스트 크기
+        timerPaint.setFakeBoldText(true);
+
+        String timerText = "Time: " + screen.getTime() + "s";
+        canvas.drawText(timerText, 20, 160, timerPaint); // 화면 상단에 시간 표시
     }
 
     private void updateAnimation() {

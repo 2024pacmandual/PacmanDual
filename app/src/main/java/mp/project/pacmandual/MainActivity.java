@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             gameMode = "SINGLE"; // 기본값 설정
         }
 
-        game = new PacmanGame(); // gameMode에 따라 게임을 초기화
+        game = new PacmanGame(1); // gameMode에 따라 게임을 초기화
         //pacmanView = new PacmanView(this);
 
         setContentView(R.layout.activity_main);
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         buttonUp.setOnTouchListener((v, event) -> {
             game.onTouchAccept(event, "UP");
             v.performClick();
-            return true; // 이벤트를 소비
+            return true;
         });
 
         buttonDown.setOnTouchListener((v, event) -> {
@@ -90,13 +90,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        isRunning = false;
-        game.timer.stopTimer(0);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         if (game.timer.getTimerFlag() > 0) {
@@ -105,9 +98,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isRunning = false;
+        game.timer.stopTimer(0);
+    }
+
+    protected void onStop(){
+        super.onStop();
+    }
+
     protected void onDestroy() {
         super.onDestroy();
-        isRunning = false;
     }
 
     private void startGameLoop() {
@@ -140,17 +143,4 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-//
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        game.onTouchEvent(event); // 이벤트를 PacmanGame으로 전달
-//        updateView(); // 게임 뷰 갱신
-//        return true;
-//    }
-//
-//    private void updateView() {
-//        PacmanGame.ScreenState state = game.getScreen(); // 현재 게임 상태를 가져옴
-//        pacmanview.update(state) // 게임 상태를 뷰에 전달하여 업데이트
-//    }
 }
