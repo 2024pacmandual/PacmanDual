@@ -22,6 +22,8 @@ public class Map {
     public int[] get_pacmanSpawnCoord() { return pacmanSpawnCoord; }
     public List<int[]> get_ghostSpawnsCoords() { return ghostSpawnsCoords; }
 
+    private int dotCount = 0;
+
 
     public Tile[][] get_Grid() { return grid; }
     public Tile getTile(int y, int x) {
@@ -63,8 +65,8 @@ public class Map {
         grid = new Tile[dy][dx];
     }
 
-    public Map() {
-        TileAlloc(0 ,0);
+    public int getDotCount(){
+        return this.dotCount;
     }
     // 주어진 2D 배열을 이용해 맵 초기화
     public Map(int[][] mapArray,int n_ghost) {
@@ -78,6 +80,7 @@ public class Map {
                         break;
                     case 1:
                         grid[i][j] = new Tile(1);   // 도트
+                        this.dotCount += 1;
                         break;
                     case 0:
                         grid[i][j] = new Tile(0);   // 빈 공간
@@ -90,11 +93,6 @@ public class Map {
         }
         pacmanSpawnCoord = _get_pacman_coord();
         ghostSpawnsCoords = _get_ghost_coords(n_ghost);
-//        for (int[] coord : ghostSpawnsCoords) {
-//            Log.d("PacmanGame", "Ghost spawn location: " + Arrays.toString(coord));
-//        }
-//        Log.d("map", "dy" + dy);
-//        Log.d("map", "dx" + dx);
     }
 
 }

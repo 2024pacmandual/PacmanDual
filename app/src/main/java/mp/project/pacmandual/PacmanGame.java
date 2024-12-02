@@ -8,21 +8,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 public class PacmanGame {
-    private List<Ghost> ghosts;
-    private Map map;
     private int pacmanX;
     private int pacmanY;
 
     private int score;
-    private LifeManager lifeCounter;
-
-
-
+    private boolean RunningFlag = true;
     private String inputButton = "NONE";
 
+    private List<Ghost> ghosts;
+    private Map map;
+    private LifeManager lifeCounter;
+    public PacmanTimer timer;
+
+
     public PacmanGame() {
-        this.map = new Map();
+        //this.map = new Map();
         // 나중에 case나 if문으로 각 레벨별 팩맨의 초기위치 설정
 
         this.score = 0;
@@ -33,6 +35,8 @@ public class PacmanGame {
         pacmanY = pacmanSpawn[0];
         pacmanX = pacmanSpawn[1];
         lifeCounter = new LifeManager();
+
+        timer = new PacmanTimer(300);
     }
 
     private void initializeMap(int level) {
@@ -68,9 +72,11 @@ public class PacmanGame {
     }
 
     public void updateGameState() {
+
         movePacman();
-
-
+        if ((map.getDotCount() <= 0) || (lifeCounter.getLives() <= 0) || (timer.getTimerFlag() < 0)){
+            RunningFlag = false;
+        }
         for (Ghost ghost : ghosts) {
             ghost.move(map); // 고스트는 매번 타일 간 이동 후 동작
         }
@@ -150,6 +156,10 @@ public class PacmanGame {
         return false; // 다른 이벤트는 무시
     };
 
+    public boolean gameOnRun(){
+        return this.RunningFlag;
+    }
+
     // ScreenState 생성 메서드
     public ScreenState getScreen() {
         return new ScreenState(
@@ -160,6 +170,15 @@ public class PacmanGame {
                 score,           // 현재 점수
                 lifeCounter.getLives()
         );
+    }
+
+    public int[] getResult(){
+        int remaining_life = lifeCounter.getLives();
+        int final_score = (remaining_life * 10) + score;
+        int remaining_time = timer.getRemainingTime();
+
+        int[] tot_result = {final_score, remaining_time};
+        return tot_result;
     }
 
     public static class ScreenState {
