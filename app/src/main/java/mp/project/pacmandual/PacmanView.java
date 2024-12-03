@@ -49,9 +49,16 @@ public class PacmanView extends View {
     }
 
     public void init() {
-        pacmanBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pacman);
-        ghostBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ghost);
-        lifeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.heart);
+        // 리소스에서 비트맵을 불러오고 타일 크기에 맞게 리사이즈
+        tileSize = 48;
+        Bitmap originalPacmanBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pacman);
+        pacmanBitmap = Bitmap.createScaledBitmap(originalPacmanBitmap, tileSize, tileSize, true);
+
+        Bitmap originalGhostBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ghost);
+        ghostBitmap = Bitmap.createScaledBitmap(originalGhostBitmap, tileSize, tileSize, true);
+
+        Bitmap originalLifeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.heart);
+        lifeBitmap = Bitmap.createScaledBitmap(originalLifeBitmap, tileSize, tileSize, true);
 
         wallPaint = new Paint();
         wallPaint.setColor(0xFF0000FF); // 파란색 (벽)
@@ -61,7 +68,7 @@ public class PacmanView extends View {
         bgPaint = new Paint();
         bgPaint.setColor(0xFF000000);
 
-        tileSize = 64;
+
 
         pacmanX = 0;
         pacmanY = 0;
