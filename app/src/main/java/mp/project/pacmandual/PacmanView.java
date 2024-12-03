@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import java.util.HashMap;
@@ -102,12 +101,8 @@ public class PacmanView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (screen == null) {
-            Log.e("PacmanView", "ScreenState is null. Skipping drawing.");
-            return; // screen이 null이면 그리기를 중단
-        }
         super.onDraw(canvas);
-
+        if (screen == null) return;
         drawMap(canvas);
         drawPacman(canvas);
         drawGhosts(canvas);
@@ -123,8 +118,7 @@ public class PacmanView extends View {
     private void drawMap(Canvas canvas) {
         canvas.drawRect(0, 0, getWidth(), getHeight(), bgPaint);
 
-        Tile[][] mapArray = screen.getMapGrid();
-        if (mapArray == null) Log.d("pacmanView", "drawMap: mapArrayNULL");
+        Tile[][] mapArray = screen.getMapArray();
         for (int y = 0; y < mapArray.length; y++) {
             for (int x = 0; x < mapArray[y].length; x++) {
                 Tile tile = mapArray[y][x];

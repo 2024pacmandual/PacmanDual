@@ -20,10 +20,6 @@ public class LifeManager {
         return lives;
     }
 
-    // 생명 수를 초기화 (게임 시작 시)
-    public void resetLives() {
-        lives = 3;
-    }
 
     // 생명 수를 증가시킬 수 있는 경우 (게임 아이템 등)
     public void increaseLife() {

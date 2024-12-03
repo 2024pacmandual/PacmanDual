@@ -2,7 +2,6 @@ package mp.project.pacmandual;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -33,17 +32,17 @@ public class MainActivity extends AppCompatActivity {
         gameMode = getIntent().getStringExtra("GAME_MODE");
 
 
-        if (gameMode == null || gameMode.equals("SINGLE")) {
-            //adjustLayoutForSingleMode();
+        if (gameMode == null ||gameMode.equals("SINGLE")) {
             Toast.makeText(this, "1인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
-            game = new PacmanGame(3);
-        } else if (gameMode.equals("TWO_PLAYER")) {
+            game = new PacmanGame(1);
+        } else if (gameMode == null ||gameMode.equals("TWO_PLAYER")) {
             Toast.makeText(this, "2인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
-            game = new PacmanGame(3);
+            game = new PacmanGame(1);
             //enemy_game = new PacmanGame(3);
         }
 
-         // gameMode에 따라 게임을 초기화
+        // gameMode에 따라 게임을 초기화
+        //pacmanView = new PacmanView(this);
 
         setContentView(R.layout.activity_main);
 
@@ -52,14 +51,10 @@ public class MainActivity extends AppCompatActivity {
         buttonLeft = findViewById(R.id.buttonLeft);
         buttonRight = findViewById(R.id.buttonRight);
 
-        //pacmanView = new PacmanView(this);
+        pacmanView = new PacmanView(this);
         pacmanView = findViewById(R.id.pacmanView);
-        pacmanView2 = findViewById(R.id.pacmanView2);
-        pacmanView.getScreenState(game.getScreen());
-        pacmanView2.getScreenState(game.getScreen());
-
-//        pacmanView2 = new PacmanView(this);
-//
+        pacmanView2 = new PacmanView(this);
+        //pacmanView2 = findViewById(R.id.pacmanView2);
         //setContentView(pacmanView);
 
         buttonUp.setOnTouchListener((v, event) -> {
@@ -83,21 +78,22 @@ public class MainActivity extends AppCompatActivity {
             game.onTouchAccept("RIGHT");
             return true;
         });
+        //startGameLoop();
     }
-
     @Override
     protected void onStart(){
         super.onStart();
-
         isRunning = true;
-        //game.timer.startTimer();
+        game.timer.startTimer();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        startGameLoop();
-        isRunning = true;
+        if (game.timer.getTimerFlag() > 0) {
+            isRunning = true;
+            startGameLoop();
+        }
     }
 
     @Override
@@ -120,18 +116,10 @@ public class MainActivity extends AppCompatActivity {
             gameLoopThread = new Thread(() -> {
                 while (isRunning) {
                     try {
-
                         state = game.updateGameState();
-                        Log.d("track g_state", "startGameLoop: " + state);
+                        pacmanView.getScreenState(game.getScreen());
 
-                        if (game.getScreen().getMapGrid() == null)
-                            Log.d("track sstate", "startGameLoop: screen map null");
-                        if(state == PacmanGame.PacmanState.Running) {
-                            //Log.d("track draw", "startGameLoop: get screen");
-                            pacmanView.getScreenState(game.getScreen());
-                        }
-
-                        if (state == PacmanGame.PacmanState.finished || state == PacmanGame.PacmanState.NextStage){
+                        if (state == PacmanGame.PacmanState.finished){
                             isRunning = false;
 
                             Intent intent = new Intent(this, EndActivity.class);
@@ -153,4 +141,5 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 }
