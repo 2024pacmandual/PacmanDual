@@ -2,10 +2,13 @@ package mp.project.pacmandual;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 
 public class MainActivity extends AppCompatActivity {
     private PacmanGame game;
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (gameMode == null ||gameMode.equals("SINGLE")) {
+            adjustLayoutForSingleMode();
             Toast.makeText(this, "1인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
             game = new PacmanGame(3);
         } else if (gameMode == null ||gameMode.equals("TWO_PLAYER")) {
@@ -80,6 +84,26 @@ public class MainActivity extends AppCompatActivity {
         });
         //startGameLoop();
     }
+
+    private void adjustLayoutForSingleMode() {
+        // ConstraintLayout 및 ConstraintSet 가져오기
+        ConstraintLayout pacmanViewGroup = findViewById(R.id.pacmanViewGroup);
+        ConstraintSet constraintSet = new ConstraintSet();
+        constraintSet.clone(pacmanViewGroup);
+
+        // PacmanView2 숨기기
+        findViewById(R.id.pacmanView2).setVisibility(View.GONE);
+
+        // PacmanView가 PacmanViewGroup 전체를 차지하도록 변경
+        constraintSet.connect(R.id.pacmanView, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START);
+        constraintSet.connect(R.id.pacmanView, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END);
+        constraintSet.connect(R.id.pacmanView, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP);
+        constraintSet.connect(R.id.pacmanView, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM);
+
+        // 변경된 제약조건 적용
+        constraintSet.applyTo(pacmanViewGroup);
+    }
+
     @Override
     protected void onStart(){
         super.onStart();
