@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     private PacmanGame game;
+    private PacmanGame enemy_game;
     private PacmanView pacmanView;
+    private PacmanView pacmanView2;
 
     ImageView buttonUp;
     ImageView buttonDown;
@@ -29,25 +31,17 @@ public class MainActivity extends AppCompatActivity {
 
         gameMode = getIntent().getStringExtra("GAME_MODE");
 
-//        if (gameMode == null) {
-//            Toast.makeText(this, "게임 모드가 전달되지 않았습니다.", Toast.LENGTH_SHORT).show();
-//            finish(); // 액티비티 종료 또는 기본 동작 설정
-//            return;
-//        }
-//
-//        if (gameMode.equals("SINGLE")) {
-//            Toast.makeText(this, "1인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
-//        } else if (gameMode.equals("TWO_PLAYER")) {
-//            Toast.makeText(this, "2인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
-//        }
 
-        // 일단 1인 모드만 가능하게 설정
-        if (gameMode == null || !gameMode.equals("SINGLE")) {
-            Toast.makeText(this, "1인 모드로 설정합니다.", Toast.LENGTH_SHORT).show();
-            gameMode = "SINGLE"; // 기본값 설정
+        if (gameMode == null ||gameMode.equals("SINGLE")) {
+            Toast.makeText(this, "1인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
+            game = new PacmanGame(3);
+        } else if (gameMode == null ||gameMode.equals("TWO_PLAYER")) {
+            Toast.makeText(this, "2인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
+            game = new PacmanGame(3);
+            enemy_game = new PacmanGame(3);
         }
 
-        game = new PacmanGame(3); // gameMode에 따라 게임을 초기화
+         // gameMode에 따라 게임을 초기화
         //pacmanView = new PacmanView(this);
 
         setContentView(R.layout.activity_main);
@@ -59,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
         pacmanView = new PacmanView(this);
         pacmanView = findViewById(R.id.pacmanView);
+        pacmanView2 = new PacmanView(this);
+        pacmanView2 = findViewById(R.id.pacmanView2);
         //setContentView(pacmanView);
 
         buttonUp.setOnTouchListener((v, event) -> {
