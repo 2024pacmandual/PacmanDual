@@ -2,13 +2,11 @@ package mp.project.pacmandual;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 
 public class MainActivity extends AppCompatActivity {
     private PacmanGame game;
@@ -35,18 +33,17 @@ public class MainActivity extends AppCompatActivity {
         gameMode = getIntent().getStringExtra("GAME_MODE");
 
 
-        if (gameMode == null ||gameMode.equals("SINGLE")) {
-            adjustLayoutForSingleMode();
+        if (gameMode == null || gameMode.equals("SINGLE")) {
+            //adjustLayoutForSingleMode();
             Toast.makeText(this, "1인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
             game = new PacmanGame(3);
-        } else if (gameMode == null ||gameMode.equals("TWO_PLAYER")) {
+        } else if (gameMode.equals("TWO_PLAYER")) {
             Toast.makeText(this, "2인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
             game = new PacmanGame(3);
             //enemy_game = new PacmanGame(3);
         }
 
          // gameMode에 따라 게임을 초기화
-        //pacmanView = new PacmanView(this);
 
         setContentView(R.layout.activity_main);
 
@@ -55,10 +52,14 @@ public class MainActivity extends AppCompatActivity {
         buttonLeft = findViewById(R.id.buttonLeft);
         buttonRight = findViewById(R.id.buttonRight);
 
-        pacmanView = new PacmanView(this);
+        //pacmanView = new PacmanView(this);
         pacmanView = findViewById(R.id.pacmanView);
-        pacmanView2 = new PacmanView(this);
         pacmanView2 = findViewById(R.id.pacmanView2);
+        pacmanView.getScreenState(game.getScreen());
+        pacmanView2.getScreenState(game.getScreen());
+
+//        pacmanView2 = new PacmanView(this);
+//
         //setContentView(pacmanView);
 
         buttonUp.setOnTouchListener((v, event) -> {
@@ -82,42 +83,21 @@ public class MainActivity extends AppCompatActivity {
             game.onTouchAccept("RIGHT");
             return true;
         });
-        //startGameLoop();
-    }
-
-    private void adjustLayoutForSingleMode() {
-        // ConstraintLayout 및 ConstraintSet 가져오기
-        ConstraintLayout pacmanViewGroup = findViewById(R.id.pacmanViewGroup);
-        ConstraintSet constraintSet = new ConstraintSet();
-        constraintSet.clone(pacmanViewGroup);
-
-        // PacmanView2 숨기기
-        findViewById(R.id.pacmanView2).setVisibility(View.GONE);
-
-        // PacmanView가 PacmanViewGroup 전체를 차지하도록 변경
-        constraintSet.connect(R.id.pacmanView, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START);
-        constraintSet.connect(R.id.pacmanView, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END);
-        constraintSet.connect(R.id.pacmanView, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP);
-        constraintSet.connect(R.id.pacmanView, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM);
-
-        // 변경된 제약조건 적용
-        constraintSet.applyTo(pacmanViewGroup);
     }
 
     @Override
     protected void onStart(){
         super.onStart();
+
         isRunning = true;
-        game.timer.startTimer();
+        //game.timer.startTimer();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (game.timer.getTimerFlag() > 0) {
-            isRunning = true;
-            startGameLoop();
-        }
+        startGameLoop();
+        isRunning = true;
     }
 
     @Override
@@ -140,10 +120,18 @@ public class MainActivity extends AppCompatActivity {
             gameLoopThread = new Thread(() -> {
                 while (isRunning) {
                     try {
-                        state = game.updateGameState();
-                        pacmanView.getScreenState(game.getScreen());
 
-                        if (state == PacmanGame.PacmanState.finished){
+                        state = game.updateGameState();
+                        Log.d("track g_state", "startGameLoop: " + state);
+
+                        if (game.getScreen().getMapGrid() == null)
+                            Log.d("track sstate", "startGameLoop: screen map null");
+                        if(state == PacmanGame.PacmanState.Running) {
+                            //Log.d("track draw", "startGameLoop: get screen");
+                            pacmanView.getScreenState(game.getScreen());
+                        }
+
+                        if (state == PacmanGame.PacmanState.finished || state == PacmanGame.PacmanState.NextStage){
                             isRunning = false;
 
                             Intent intent = new Intent(this, EndActivity.class);

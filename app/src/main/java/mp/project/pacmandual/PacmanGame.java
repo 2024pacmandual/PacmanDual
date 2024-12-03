@@ -1,10 +1,7 @@
 
 package mp.project.pacmandual;
 
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -20,7 +17,7 @@ public class PacmanGame {
     private final List<Ghost> ghosts;
     private Map map;
     private final LifeManager lifeCounter;
-    private final StageContainer stage = new StageContainer();
+    private StageContainer stage;
 
     public PacmanTimer timer;
     private PacmanState g_state;
@@ -36,6 +33,7 @@ public class PacmanGame {
     public PacmanGame(int level) {
         g_state = PacmanState.Init;
         ghosts = new ArrayList<>();
+        stage = new StageContainer();
 
         initializeMap(level);
         this.score = 0;
@@ -49,29 +47,29 @@ public class PacmanGame {
 
     private void initializeMap(int level) {
         int[][] array;
-        int n_ghost;
-        if (level > 2) n_ghost = 4;
-        else n_ghost = 3;
+        int n_ghost = level;
 
         array = stage.getMapArray(level);
 
         map = new Map(array, n_ghost); //setMap_lv3까지 계획
+
         List<int[]> coords = map.get_ghostSpawnsCoords();
 
         for (int[] coord : coords) {
-            Log.d("coords", "coord :  " + Arrays.toString(coord));
-        }
-        for (int[] coord : coords) {
             ghosts.add(new Ghost(map, coord[0], coord[1]));
         }
-
     }
 
-    public PacmanState updateGameState() {
+    public synchronized PacmanState updateGameState() {
+        if (g_state == PacmanState.Init) {
+            timer.startTimer();
+            g_state = PacmanState.Running;
+        }
+        if (timer.getTimerFlag() == 0) timer.startTimer(); //onPause -> onResume
         movePacman();
         if ((map.getDotCount() <= 0) || (timer.getTimerFlag() < 0)){
             if (lifeCounter.getLives() > 0) g_state = PacmanState.NextStage;
-            
+
         } else if (lifeCounter.getLives() <= 0) {
             g_state = PacmanState.finished;
         }
@@ -93,10 +91,8 @@ public class PacmanGame {
 
 
     private void movePacman() {
-        //Log.d("Mv", "mv to :" + inputButton);
         int newY = pacmanY;
         int newX = pacmanX;
-        Log.d("inputButton", "inputButton = " + inputButton);
         switch (inputButton){
             case "UP": newY -= 1; break;
             case "DOWN": newY += 1; break;
@@ -139,17 +135,6 @@ public class PacmanGame {
         inputButton = action;
     };
 
-    public ScreenState getScreen() {
-        return new ScreenState(
-                map.get_Grid(), // 현재 맵 데이터
-                pacmanX,        // 팩맨의 X 좌표
-                pacmanY,        // 팩맨의 Y 좌표
-                ghosts,         // 고스트 리스트
-                score,           // 현재 점수
-                lifeCounter.getLives(),
-                timer.getRemainingTime()
-        );
-    }
 
     public int[] getResult(){
         int remaining_life = lifeCounter.getLives();
@@ -160,29 +145,47 @@ public class PacmanGame {
         return tot_result;
     }
 
+    public ScreenState getScreen() {
+//        if (map.get_Grid() == null) {
+//            return new ScreenState(new Tile[0][0], pacmanX, pacmanY, ghosts, score, lifeCounter.getLives(), timer.getRemainingTime());
+//        }
+        return new ScreenState(
+                map.get_Grid(), // 현재 맵 데이터
+                pacmanX,        // 팩맨의 X 좌표
+                pacmanY,        // 팩맨의 Y 좌표
+                ghosts,         // 고스트 리스트
+                score,           // 현재 점수
+                lifeCounter.getLives(),
+                timer.getRemainingTime(),
+                g_state
+        );
+    }
+
     public static class ScreenState {
-        private final Tile[][] mapArray;  // 맵 데이터
+        private final Tile[][] grid;  // 맵 데이터
         private final int pacmanX;       // 팩맨의 X 좌표
         private final int pacmanY;       // 팩맨의 Y 좌표
         private final List<Ghost> ghosts; // 고스트 리스트
         private final int score;         // 현재 점수
         private final int life;
         private final int time;
+        private final PacmanState return_state;
         // ScreenState 생성자
-        public ScreenState(Tile[][] mapArray, int pacmanX, int pacmanY, List<Ghost> ghosts, int score, int life, int time) {
-            this.mapArray = mapArray;
+        public ScreenState(Tile[][] grid, int pacmanX, int pacmanY, List<Ghost> ghosts, int score, int life, int time, PacmanState state) {
+            this.grid = grid;
             this.pacmanX = pacmanX;
             this.pacmanY = pacmanY;
             this.ghosts = ghosts;
             this.score = score;
             this.life = life;
             this.time = time;
+            this.return_state = state;
         }
 
 
         // 맵 데이터를 반환
-        public Tile[][] getMapArray() {
-            return mapArray;
+        public Tile[][] getMapGrid() {
+            return grid;
         }
 
         // 팩맨의 X 좌표 반환
@@ -211,6 +214,9 @@ public class PacmanGame {
 
         public int getTime() {
             return time;
+        }
+        public PacmanState getState() {
+            return return_state;
         }
     }
 }
