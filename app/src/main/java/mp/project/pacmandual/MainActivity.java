@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     private Thread gameLoopThread;
     private boolean isRunning = true;
 
+    private PacmanGame.PacmanState state;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,10 +120,10 @@ public class MainActivity extends AppCompatActivity {
             gameLoopThread = new Thread(() -> {
                 while (isRunning) {
                     try {
-                        game.updateGameState();
+                        state = game.updateGameState();
                         pacmanView.getScreenState(game.getScreen());
 
-                        if (!game.gameOnRun()){
+                        if (state == PacmanGame.PacmanState.finished){
                             isRunning = false;
 
                             Intent intent = new Intent(this, EndActivity.class);

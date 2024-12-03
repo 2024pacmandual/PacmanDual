@@ -13,23 +13,28 @@ public class PacmanGame {
     private int pacmanY;
 
     private int score;
-    private boolean RunningFlag = true;
     private String inputButton = "NONE";
-    private int timeAfterCaught = 0;
+    private int timeAfterCaught = 0; //일시적 무적 상태
 
 
     private final List<Ghost> ghosts;
     private Map map;
     private final LifeManager lifeCounter;
-    private final StageContainer stage = new StageContainer();;
+    private final StageContainer stage = new StageContainer();
 
     public PacmanTimer timer;
+    private PacmanState g_state;
 
-
+    public enum PacmanState {
+        Init(0), Running(1), NextStage(2), finished(-1);
+        private final int value;
+        private PacmanState(int value) { this.value = value; }
+        public int value() { return value; }
+    }
 
 
     public PacmanGame(int level) {
-
+        g_state = PacmanState.Init;
         ghosts = new ArrayList<>();
 
         initializeMap(level);
@@ -40,8 +45,6 @@ public class PacmanGame {
         pacmanX = pacmanSpawn[1];
         lifeCounter = new LifeManager();
         timer = new PacmanTimer(300);
-
-
     }
 
     private void initializeMap(int level) {
@@ -64,21 +67,27 @@ public class PacmanGame {
 
     }
 
-    public void updateGameState() {
-
+    public PacmanState updateGameState() {
         movePacman();
-        if ((map.getDotCount() <= 0) || (lifeCounter.getLives() <= 0) || (timer.getTimerFlag() < 0)){
-            RunningFlag = false;
+        if ((map.getDotCount() <= 0) || (timer.getTimerFlag() < 0)){
+            if (lifeCounter.getLives() > 0) g_state = PacmanState.NextStage;
+            
+        } else if (lifeCounter.getLives() <= 0) {
+            g_state = PacmanState.finished;
         }
+        if(getCaught() && timeAfterCaught > 4) {
+            lifeCounter.decreaseLife();
+            timeAfterCaught = 0;
+        } //ghost한테 잡힘
         for (Ghost ghost : ghosts) {
             ghost.move(map); // 고스트는 매번 타일 간 이동 후 동작
         }
-
         if(getCaught() && timeAfterCaught > 4) {
             lifeCounter.decreaseLife();
             timeAfterCaught = 0;
         } //ghost한테 잡힘
         timeAfterCaught++;
+        return g_state;
     }
 
 
@@ -96,7 +105,6 @@ public class PacmanGame {
             default: return;
         }
 
-
         if (isMoveValid(newY, newX)) {
             Tile tile = map.getTile(newY, newX);
             if (tile.hasDot()) {
@@ -111,18 +119,12 @@ public class PacmanGame {
     }
 
     private boolean isMoveValid(int y, int x) {
-        //Log.d("Mv", "val");
-        // 맵 경계를 벗어나지 않는지 확인
         if (y < 0 || y >= map.get_dy() || x < 0 || x >= map.get_dx()) {
-
-            Log.d("Mv", "new X:" + x + ", dx : " + map.get_dx());
             return false;
         }
         Tile tile = map.getTile(y, x);
-        if (tile.isWall()) {
-            Log.d("Mv", "wall");
+        if (tile.isWall())
             return false;
-        }
         return true;
     }
 
@@ -133,16 +135,10 @@ public class PacmanGame {
         return false;
     }
 
-
     public void onTouchAccept(String action){
         inputButton = action;
     };
 
-    public boolean gameOnRun(){
-        return this.RunningFlag;
-    }
-
-    // ScreenState 생성 메서드
     public ScreenState getScreen() {
         return new ScreenState(
                 map.get_Grid(), // 현재 맵 데이터
