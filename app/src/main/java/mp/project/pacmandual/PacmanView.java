@@ -20,7 +20,7 @@ public class PacmanView extends View {
     private PacmanGame.ScreenState screen;
     private String gameMode;
 
-    private Paint dotPaint, wallPaint;
+    private Paint dotPaint, wallPaint, bgPaint;
 
     private List<Ghost> ghosts;
     private int tileSize;
@@ -58,6 +58,8 @@ public class PacmanView extends View {
         dotPaint = new Paint();
         dotPaint.setColor(0xFFFFD700); // 금색 (도트)
         dotPaint.setStyle(Paint.Style.FILL);
+        bgPaint = new Paint();
+        bgPaint.setColor(0xFF000000);
 
         tileSize = 64;
 
@@ -107,6 +109,8 @@ public class PacmanView extends View {
     }
 
     private void drawMap(Canvas canvas) {
+        canvas.drawRect(0, 0, getWidth(), getHeight(), bgPaint);
+
         Tile[][] mapArray = screen.getMapArray();
         for (int y = 0; y < mapArray.length; y++) {
             for (int x = 0; x < mapArray[y].length; x++) {
