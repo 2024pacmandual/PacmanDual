@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
     private PacmanGame game;
-    private PacmanGame enemy_game;
+    private PacmanGame.ScreenState enemy_game;
     private PacmanView pacmanView;
     private PacmanView pacmanView2;
 
@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (gameMode == null ||gameMode.equals("TWO_PLAYER")) {
             Toast.makeText(this, "2인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
             game = new PacmanGame(3);
-            enemy_game = new PacmanGame(3);
+            //enemy_game = new PacmanGame(3);
         }
 
          // gameMode에 따라 게임을 초기화
