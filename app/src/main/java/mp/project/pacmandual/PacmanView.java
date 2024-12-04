@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class PacmanView extends View {
-    private Bitmap pacmanBitmap;
+    private static Bitmap pacman, pacmanUp, pacmanDown, pacmanLeft, pacmanRight;
     private Bitmap ghostBitmap;
     private Bitmap lifeBitmap;
 
@@ -27,6 +28,7 @@ public class PacmanView extends View {
 
     // Pacman 위치와 목표 위치
     private float pacmanX, pacmanY;
+    private String pacmanDirection;
     private float targetPacmanX, targetPacmanY;
     private float pacmanSpeed = 20.0f; // 픽셀 단위 이동 속도
 
@@ -39,6 +41,43 @@ public class PacmanView extends View {
 
     public PacmanView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        tileSize = 36;
+        if (pacman == null) {
+            Bitmap pacmanBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pacman);
+            pacman = Bitmap.createScaledBitmap(pacmanBitmap, tileSize, tileSize, true);
+        }
+        if (pacmanUp == null) {
+            Bitmap pacmanUpBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.up);
+            pacmanUp = Bitmap.createScaledBitmap(pacmanUpBitmap, tileSize, tileSize, true);
+        }
+        if (pacmanDown == null) {
+            Bitmap pacmanDownBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.down);
+            pacmanDown = Bitmap.createScaledBitmap(pacmanDownBitmap, tileSize, tileSize, true);
+        }
+        if (pacmanLeft == null) {
+            Bitmap pacmanLeftBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.left);
+            pacmanLeft = Bitmap.createScaledBitmap(pacmanLeftBitmap, tileSize, tileSize, true);
+        }
+        if (pacmanRight == null) {
+            Bitmap pacmanRightBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.right);
+            pacmanRight = Bitmap.createScaledBitmap(pacmanRightBitmap, tileSize, tileSize, true);
+        }
+
+//        if (pacman == null) {
+//            pacman = BitmapFactory.decodeResource(getResources(), R.drawable.pacman);
+//        }
+//        if (pacmanUp == null) {
+//            pacmanUp = BitmapFactory.decodeResource(getResources(), R.drawable.up);
+//        }
+//        if (pacmanDown == null) {
+//            pacmanDown = BitmapFactory.decodeResource(getResources(), R.drawable.down);
+//        }
+//        if (pacmanLeft == null) {
+//            pacmanLeft = BitmapFactory.decodeResource(getResources(), R.drawable.left);
+//        }
+//        if (pacmanRight == null) {
+//            pacmanRight = BitmapFactory.decodeResource(getResources(), R.drawable.right);
+//        }
         init();
     }
 
@@ -51,8 +90,24 @@ public class PacmanView extends View {
     public void init() {
         // 리소스에서 비트맵을 불러오고 타일 크기에 맞게 리사이즈
         tileSize = 36;
-        Bitmap originalPacmanBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pacman);
-        pacmanBitmap = Bitmap.createScaledBitmap(originalPacmanBitmap, tileSize, tileSize, true);
+
+        // Bitmap 로드 및 크기 조정
+        if (pacman == null) {
+            pacman = loadAndResizeBitmap(R.drawable.pacman, tileSize);
+        }
+        if (pacmanUp == null) {
+            pacmanUp = loadAndResizeBitmap(R.drawable.up, tileSize);
+        }
+        if (pacmanDown == null) {
+            pacmanDown = loadAndResizeBitmap(R.drawable.down, tileSize);
+        }
+        if (pacmanLeft == null) {
+            pacmanLeft = loadAndResizeBitmap(R.drawable.left, tileSize);
+        }
+        if (pacmanRight == null) {
+            pacmanRight = loadAndResizeBitmap(R.drawable.right, tileSize);
+        }
+
 
         Bitmap originalGhostBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ghost);
         ghostBitmap = Bitmap.createScaledBitmap(originalGhostBitmap, tileSize, tileSize, true);
@@ -72,10 +127,20 @@ public class PacmanView extends View {
 
         pacmanX = 0;
         pacmanY = 0;
+        pacmanDirection = "NONE";
         targetPacmanX = 0;
         targetPacmanY = 0;
 
         ghostPositions = new HashMap<>();
+    }
+
+    private Bitmap loadAndResizeBitmap(int resourceId, int size) {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resourceId);
+        if (bitmap != null) {
+            return Bitmap.createScaledBitmap(bitmap, size, size, true);
+        }
+        Log.e("PacmanView", "Failed to load bitmap: " + resourceId);
+        return null;
     }
 
     public void getScreenState(PacmanGame.ScreenState screenState) {
@@ -85,10 +150,12 @@ public class PacmanView extends View {
         if (isinit) {
             pacmanX = screen.getPacmanX() * tileSize;
             pacmanY = screen.getPacmanY() * tileSize;
+            pacmanDirection = screen.getPacmanDirection();
             targetPacmanX = pacmanX;
             targetPacmanY = pacmanY;
             isinit = false; // 초기 스폰 완료
         } else if (!isPacmanMoving) {
+            pacmanDirection = screen.getPacmanDirection();
             targetPacmanX = screen.getPacmanX() * tileSize;
             targetPacmanY = screen.getPacmanY() * tileSize;
         }
@@ -136,8 +203,33 @@ public class PacmanView extends View {
         }
     }
 
+
+
+
     private void drawPacman(Canvas canvas) {
-        canvas.drawBitmap(pacmanBitmap, pacmanX, pacmanY, null);
+        if (pacmanDirection.equals("UP") && pacmanUp != null) {
+            canvas.drawBitmap(pacmanUp, pacmanX, pacmanY, null);
+        } else if (pacmanDirection.equals("DOWN") && pacmanDown != null) {
+            canvas.drawBitmap(pacmanDown, pacmanX, pacmanY, null);
+        } else if (pacmanDirection.equals("LEFT") && pacmanLeft != null) {
+            canvas.drawBitmap(pacmanLeft, pacmanX, pacmanY, null);
+        } else if (pacmanDirection.equals("RIGHT") && pacmanRight != null) {
+            canvas.drawBitmap(pacmanRight, pacmanX, pacmanY, null);
+        } else if (pacman != null) {
+            canvas.drawBitmap(pacman, pacmanX, pacmanY, null);
+        } else {
+            Log.e("PacmanView", "Pacman bitmap is not available!");
+        }
+
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (pacman != null && !pacman.isRecycled()) {
+            pacman.recycle();
+            pacman = null;
+        }
     }
 
     private void drawGhosts(Canvas canvas) {
