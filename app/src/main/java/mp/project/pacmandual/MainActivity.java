@@ -34,10 +34,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (gameMode == null ||gameMode.equals("SINGLE")) {
             Toast.makeText(this, "1인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
-            game = new PacmanGame(1);
+            game = new PacmanGame(2);
         } else if (gameMode == null ||gameMode.equals("TWO_PLAYER")) {
             Toast.makeText(this, "2인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
-            game = new PacmanGame(1);
+            game = new PacmanGame(2);
             //enemy_game = new PacmanGame(3);
         }
 
@@ -51,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
         buttonLeft = findViewById(R.id.buttonLeft);
         buttonRight = findViewById(R.id.buttonRight);
 
-        pacmanView = new PacmanView(this);
+        //pacmanView = new PacmanView(this);
         pacmanView = findViewById(R.id.pacmanView);
-        pacmanView2 = new PacmanView(this);
-        //pacmanView2 = findViewById(R.id.pacmanView2);
+        //pacmanView2 = new PacmanView(this);
+        pacmanView2 = findViewById(R.id.pacmanView2);
         //setContentView(pacmanView);
 
         buttonUp.setOnTouchListener((v, event) -> {
@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         state = game.updateGameState();
                         pacmanView.getScreenState(game.getScreen());
+                        pacmanView2.getScreenState(game.getScreen());
 
                         if (state == PacmanGame.PacmanState.finished){
                             isRunning = false;
@@ -129,7 +130,8 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         runOnUiThread(() -> {
-                            pacmanView.invalidate(); // PacmanView의 onDraw() 호출
+                            pacmanView.invalidate();
+                            pacmanView2.invalidate();// PacmanView의 onDraw() 호출
                         });
                         Thread.sleep(100); // 게임 루프 간격 설정
                     } catch (InterruptedException e) {
