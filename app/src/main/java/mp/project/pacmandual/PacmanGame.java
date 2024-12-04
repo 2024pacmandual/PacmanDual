@@ -49,9 +49,7 @@ public class PacmanGame {
 
     private void initializeMap(int level) {
         int[][] array;
-        int n_ghost;
-        if (level > 2) n_ghost = 4;
-        else n_ghost = 3;
+        int n_ghost = level;
 
         array = stage.getMapArray(level);
 
@@ -71,7 +69,7 @@ public class PacmanGame {
         movePacman();
         if ((map.getDotCount() <= 0) || (timer.getTimerFlag() < 0)){
             if (lifeCounter.getLives() > 0) g_state = PacmanState.NextStage;
-            
+
         } else if (lifeCounter.getLives() <= 0) {
             g_state = PacmanState.finished;
         }
@@ -147,7 +145,8 @@ public class PacmanGame {
                 ghosts,         // 고스트 리스트
                 score,           // 현재 점수
                 lifeCounter.getLives(),
-                timer.getRemainingTime()
+                timer.getRemainingTime(),
+                (g_state == PacmanState.Init)
         );
     }
 
@@ -168,8 +167,9 @@ public class PacmanGame {
         private final int score;         // 현재 점수
         private final int life;
         private final int time;
+        private final boolean isInit;
         // ScreenState 생성자
-        public ScreenState(Tile[][] mapArray, int pacmanX, int pacmanY, List<Ghost> ghosts, int score, int life, int time) {
+        public ScreenState(Tile[][] mapArray, int pacmanX, int pacmanY, List<Ghost> ghosts, int score, int life, int time, boolean isInit) {
             this.mapArray = mapArray;
             this.pacmanX = pacmanX;
             this.pacmanY = pacmanY;
@@ -177,6 +177,7 @@ public class PacmanGame {
             this.score = score;
             this.life = life;
             this.time = time;
+            this.isInit = isInit;
         }
 
 
@@ -212,6 +213,8 @@ public class PacmanGame {
         public int getTime() {
             return time;
         }
+        public boolean isInit(){
+            return isInit;
+        }
     }
 }
-

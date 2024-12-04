@@ -50,7 +50,7 @@ public class PacmanView extends View {
 
     public void init() {
         // 리소스에서 비트맵을 불러오고 타일 크기에 맞게 리사이즈
-        tileSize = 48;
+        tileSize = 36;
         Bitmap originalPacmanBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pacman);
         pacmanBitmap = Bitmap.createScaledBitmap(originalPacmanBitmap, tileSize, tileSize, true);
 
@@ -102,7 +102,7 @@ public class PacmanView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
+        if (screen == null) return;
         drawMap(canvas);
         drawPacman(canvas);
         drawGhosts(canvas);
