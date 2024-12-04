@@ -8,7 +8,7 @@ import java.util.List;
 public class PacmanGame {
     private int pacmanX;
     private int pacmanY;
-
+    private String pacmanDirection = "NONE";
     private int score;
     private String inputButton = "NONE";
     private int timeAfterCaught = 0; //일시적 무적 상태
@@ -102,10 +102,10 @@ public class PacmanGame {
         int newY = pacmanY;
         int newX = pacmanX;
         switch (inputButton){
-            case "UP": newY -= 1; break;
-            case "DOWN": newY += 1; break;
-            case "LEFT" : newX -= 1; break;
-            case "RIGHT" : newX += 1; break;
+            case "UP": newY -= 1; pacmanDirection = "UP"; break;
+            case "DOWN": newY += 1; pacmanDirection = "DOWN"; break;
+            case "LEFT" : newX -= 1; pacmanDirection = "LEFT"; break;
+            case "RIGHT" : newX += 1; pacmanDirection = "RIGHT"; break;
             default: return;
         }
 
@@ -161,6 +161,7 @@ public class PacmanGame {
                 map.get_Grid(), // 현재 맵 데이터
                 pacmanX,        // 팩맨의 X 좌표
                 pacmanY,        // 팩맨의 Y 좌표
+                pacmanDirection,
                 ghosts,         // 고스트 리스트
                 score,           // 현재 점수
                 lifeCounter.getLives(),
@@ -210,11 +211,13 @@ public class PacmanGame {
         private final int life;
         private final int time;
         private final boolean isInit;
+        private final String pacmanDirection;
         // ScreenState 생성자
-        public ScreenState(Tile[][] mapArray, int pacmanX, int pacmanY, List<Ghost> ghosts, int score, int life, int time, boolean isInit) {
+        public ScreenState(Tile[][] mapArray, int pacmanX, int pacmanY, String pacmanDirection, List<Ghost> ghosts, int score, int life, int time, boolean isInit) {
             this.mapArray = mapArray;
             this.pacmanX = pacmanX;
             this.pacmanY = pacmanY;
+            this.pacmanDirection = pacmanDirection;
             this.ghosts = ghosts;
             this.score = score;
             this.life = life;
@@ -237,6 +240,9 @@ public class PacmanGame {
         public int getPacmanY() {
             return pacmanY;
         }
+
+        // 팩맨의 이동 방향 반환
+        public String getPacmanDirection() { return pacmanDirection; }
 
         // 고스트 리스트 반환
         public List<Ghost> getGhosts() {

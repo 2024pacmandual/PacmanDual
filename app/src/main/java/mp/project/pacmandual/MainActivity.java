@@ -75,6 +75,29 @@ public class MainActivity extends AppCompatActivity {
         buttonDown = findViewById(R.id.buttonDown);
         buttonLeft = findViewById(R.id.buttonLeft);
         buttonRight = findViewById(R.id.buttonRight);
+      
+        ImageView pauseButton = findViewById(R.id.pauseButton);
+        ImageView resumeButton = findViewById(R.id.resumeButton);
+        ImageView exitButton = findViewById(R.id.exitButton);
+
+        // Pause 버튼 클릭 리스너
+        pauseButton.setOnClickListener(view -> {
+            onPause(); // 게임 멈춤 기능 추가
+            pauseButton.setVisibility(View.GONE);
+            resumeButton.setVisibility(View.VISIBLE);
+        });
+
+        // Resume 버튼 클릭 리스너
+        resumeButton.setOnClickListener(view -> {
+            onResume(); // 게임 재생 기능 추가
+            resumeButton.setVisibility(View.GONE);
+            pauseButton.setVisibility(View.VISIBLE);
+        });
+
+        // Exit 버튼 클릭 리스너
+        exitButton.setOnClickListener(view -> {
+            finish(); // 액티비티 종료
+        });
 
         buttonUp.setOnTouchListener((v, event) -> {
             game.onTouchAccept("UP");
