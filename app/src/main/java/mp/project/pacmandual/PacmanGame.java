@@ -150,6 +150,7 @@ public class PacmanGame {
                     map.get_Grid(), // 현재 맵 데이터
                     pacmanX,        // 팩맨의 X 좌표
                     pacmanY,        // 팩맨의 Y 좌표
+                    pacmanDirection,
                     ghosts,         // 고스트 리스트
                     score,           // 현재 점수
                     lifeCounter.getLives(),
