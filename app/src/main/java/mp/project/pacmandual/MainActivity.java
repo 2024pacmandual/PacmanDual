@@ -2,6 +2,7 @@ package mp.project.pacmandual;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -31,20 +32,25 @@ public class MainActivity extends AppCompatActivity {
 
         gameMode = getIntent().getStringExtra("GAME_MODE");
 
-
+        setContentView(R.layout.activity_main);
+        pacmanView = findViewById(R.id.pacmanView);
+        pacmanView2 = findViewById(R.id.pacmanView2);
         if (gameMode == null ||gameMode.equals("SINGLE")) {
             Toast.makeText(this, "1인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
             game = new PacmanGame(2);
+            //pacmanView = findViewById(R.id.pacmanView);
+
+            pacmanView2.setVisibility(View.GONE);
+
         } else if (gameMode == null ||gameMode.equals("TWO_PLAYER")) {
             Toast.makeText(this, "2인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
             game = new PacmanGame(2);
+            //pacmanView = findViewById(R.id.pacmanView);
+            //pacmanView2 = findViewById(R.id.pacmanView2);
             //enemy_game = new PacmanGame(3);
         }
 
-        // gameMode에 따라 게임을 초기화
-        //pacmanView = new PacmanView(this);
 
-        setContentView(R.layout.activity_main);
 
         buttonUp = findViewById(R.id.buttonUp);
         buttonDown = findViewById(R.id.buttonDown);
@@ -52,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
         buttonRight = findViewById(R.id.buttonRight);
 
         //pacmanView = new PacmanView(this);
-        pacmanView = findViewById(R.id.pacmanView);
+
         //pacmanView2 = new PacmanView(this);
-        pacmanView2 = findViewById(R.id.pacmanView2);
+
         //setContentView(pacmanView);
 
         buttonUp.setOnTouchListener((v, event) -> {
