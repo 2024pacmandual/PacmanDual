@@ -15,6 +15,7 @@ import java.util.Map;
 public class PacmanView extends View {
     private Bitmap pacmanBitmap;
     private Bitmap ghostBitmap;
+    private Bitmap spectorBitmap;
     private Bitmap lifeBitmap;
 
     private PacmanGame.ScreenState screen;
@@ -31,11 +32,11 @@ public class PacmanView extends View {
     private float pacmanSpeed = 20.0f; // 픽셀 단위 이동 속도
 
     private boolean isPacmanMoving = false; // 팩맨이 현재 이동 중인지 확인
-    private boolean isinit = true;
+    private boolean isinit;
 
     // Ghost 위치와 목표 위치
     private Map<Ghost, float[]> ghostPositions; // 각 고스트의 현재 위치
-    private float ghostSpeed = 8.0f; // 고스트의 픽셀 단위 이동 속도
+    private float ghostSpeed = 6.0f; // 고스트의 픽셀 단위 이동 속도
 
     public PacmanView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -57,6 +58,9 @@ public class PacmanView extends View {
         Bitmap originalGhostBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ghost);
         ghostBitmap = Bitmap.createScaledBitmap(originalGhostBitmap, tileSize, tileSize, true);
 
+        Bitmap SpectorBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mare);
+        spectorBitmap = Bitmap.createScaledBitmap(SpectorBitmap, tileSize, tileSize, true);
+
         Bitmap originalLifeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.heart);
         lifeBitmap = Bitmap.createScaledBitmap(originalLifeBitmap, tileSize, tileSize, true);
 
@@ -67,8 +71,6 @@ public class PacmanView extends View {
         dotPaint.setStyle(Paint.Style.FILL);
         bgPaint = new Paint();
         bgPaint.setColor(0xFF000000);
-
-
 
         pacmanX = 0;
         pacmanY = 0;
@@ -81,13 +83,14 @@ public class PacmanView extends View {
     public void getScreenState(PacmanGame.ScreenState screenState) {
         screen = screenState;
         ghosts = screen.getGhosts();
-
-        if (isinit) {
+        isinit = screen.isInit();
+        //Log.d("from view", "is Init " + screen.isInit());
+        if (screen.isInit()) {
             pacmanX = screen.getPacmanX() * tileSize;
             pacmanY = screen.getPacmanY() * tileSize;
             targetPacmanX = pacmanX;
             targetPacmanY = pacmanY;
-            isinit = false; // 초기 스폰 완료
+            //isinit = false; // 초기 스폰 완료
         } else if (!isPacmanMoving) {
             targetPacmanX = screen.getPacmanX() * tileSize;
             targetPacmanY = screen.getPacmanY() * tileSize;
@@ -101,6 +104,7 @@ public class PacmanView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        //Log.d("view", "onDraw");
         super.onDraw(canvas);
         if (screen == null) return;
         drawMap(canvas);
@@ -146,6 +150,10 @@ public class PacmanView extends View {
         for (Ghost ghost : ghosts) {
             float[] pos = ghostPositions.get(ghost);
             if (pos != null) {
+                if (ghost.type == 1) {
+                    canvas.drawBitmap(spectorBitmap, pos[0], pos[1], null);
+                    continue;
+                }
                 canvas.drawBitmap(ghostBitmap, pos[0], pos[1], null);
             }
         }
