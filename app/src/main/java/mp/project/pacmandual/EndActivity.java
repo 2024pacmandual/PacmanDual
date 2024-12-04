@@ -25,8 +25,10 @@ public class EndActivity extends AppCompatActivity {
         restartGameButton = findViewById(R.id.restartGameButton);
 
         int[] endInfo;
+        String prevMode;
 
         endInfo = getIntent().getIntArrayExtra("GAME_RESULT");
+        prevMode = getIntent().getStringExtra("GAME_MODE");
         if (endInfo != null){
             totalScoreText.setText(getString(R.string.final_score, endInfo[0]));
             //totalScoreText.setText(getString(R.string.remaining_time, endInfo[0]));
@@ -44,6 +46,7 @@ public class EndActivity extends AppCompatActivity {
 
         restartGameButton.setOnClickListener(v -> {
             Intent intent = new Intent(EndActivity.this, MainActivity.class);
+            intent.putExtra("GAME_MODE", prevMode);
             startActivity(intent);
             finish();
         });
