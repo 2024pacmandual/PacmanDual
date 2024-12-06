@@ -48,7 +48,16 @@ public class StartActivity extends AppCompatActivity {
         });
 
         exitGameButton.setOnClickListener(v -> finish());
-        }
+        };
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        singlePlayerButton.setChecked(false);
+        twoPlayerButton.setChecked(false);
+        selectedMode = null;
+    }
+
     }
 
 

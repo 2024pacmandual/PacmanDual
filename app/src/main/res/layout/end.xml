@@ -10,8 +10,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:text="GAME RESULT"
+        android:layout_marginTop="80dp"
+        android:text="GAME OVER!"
         android:textSize="70sp"
         android:textColor="#f4ff00"
         android:textStyle="bold" />
@@ -26,6 +26,7 @@
         android:layout_marginTop="20dp"
         android:text="YOUR TOTAL SCORE: 0"
         android:textSize="24sp"
+        android:visibility="visible"
         android:textColor="#FFFFFF" />
         <!--android:visibility="gone"-->
 
@@ -36,15 +37,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/gameResultText"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="7dp"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/player1ScoreText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PLAYER 1 SCORE: 0"
+            android:text="YOUR SCORE: 0"
             android:textSize="24sp"
             android:textColor="#FFFFFF" />
 
@@ -52,7 +53,7 @@
             android:id="@+id/player2ScoreText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PLAYER 2 SCORE: 0"
+            android:text="OPPONENT SCORE: 0"
             android:textSize="24sp"
             android:textColor="#FFFFFF" />
     </LinearLayout>
@@ -65,7 +66,7 @@
         android:layout_below="@id/twoPlayerScoreLayout"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        android:layout_marginTop="60dp">
+        android:layout_marginTop="15dp">
 
         <Button
             android:id="@+id/backToStartButton"
