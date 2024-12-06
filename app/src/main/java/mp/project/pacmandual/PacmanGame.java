@@ -174,7 +174,7 @@ public class PacmanGame {
         int final_score = (remaining_life * 30) + score;
         int remaining_time = timer.getRemainingTime();
 
-        int[] tot_result = {final_score, remaining_time};
+        int[] tot_result = {final_score, remaining_life};
         return tot_result;
     }
 

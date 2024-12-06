@@ -37,7 +37,7 @@ public class PacmanView extends View {
     private boolean isinit;
 
     // Ghost 위치와 목표 위치
-    private Map<Ghost, float[]> ghostPositions; // 각 고스트의 현재 위치
+    private Map<Ghost, float[]> ghostPositions;
     private float ghostSpeed = 6.0f; // 고스트의 픽셀 단위 이동 속도
 
     public PacmanView(Context context, AttributeSet attrs) {
@@ -64,29 +64,14 @@ public class PacmanView extends View {
             pacmanRight = Bitmap.createScaledBitmap(pacmanRightBitmap, tileSize, tileSize, true);
         }
 
-//        if (pacman == null) {
-//            pacman = BitmapFactory.decodeResource(getResources(), R.drawable.pacman);
-//        }
-//        if (pacmanUp == null) {
-//            pacmanUp = BitmapFactory.decodeResource(getResources(), R.drawable.up);
-//        }
-//        if (pacmanDown == null) {
-//            pacmanDown = BitmapFactory.decodeResource(getResources(), R.drawable.down);
-//        }
-//        if (pacmanLeft == null) {
-//            pacmanLeft = BitmapFactory.decodeResource(getResources(), R.drawable.left);
-//        }
-//        if (pacmanRight == null) {
-//            pacmanRight = BitmapFactory.decodeResource(getResources(), R.drawable.right);
-//        }
         init();
     }
 
-    public PacmanView(MainActivity context) {
-        super(context);
-        this.gameMode = gameMode;
-        init();
-    }
+//    public PacmanView(MainActivity context) {
+//        super(context);
+//        this.gameMode = gameMode;
+//        init();
+//    }
 
     public void init() {
         // 리소스에서 비트맵을 불러오고 타일 크기에 맞게 리사이즈
