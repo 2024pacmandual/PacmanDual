@@ -54,13 +54,10 @@ public class EndActivity extends AppCompatActivity {
                 params.addRule(RelativeLayout.BELOW, R.id.totalScoreText);
                 buttonLayout.setLayoutParams(params);
             }
-//            totalScoreText.setText(getString(R.string.final_score, endInfo[0]));
-            //totalScoreText.setText(getString(R.string.remaining_time, endInfo[0]));
+
         } else {
             String r1 = "No score, got no Intent";
-            //String r2 = "No remaining time, got no Intent";
             totalScoreText.setText(r1);
-            //totalScoreText.setText(r2);
         }
 
 

@@ -3,7 +3,6 @@ package mp.project.pacmandual;
 import android.os.Handler;
 
 public class PacmanTimer {
-    private int TotalTime;
     private int remainingTime;
     private Handler timerHandler;
     private Runnable timerRunnable;
@@ -16,7 +15,7 @@ public class PacmanTimer {
 
     public PacmanTimer(int time){
         timerHandler = new Handler();
-        remainingTime = TotalTime = time;
+        remainingTime = time;
         timerFlag = 0;
         this.setupTimer();
     }
@@ -43,10 +42,6 @@ public class PacmanTimer {
         timerFlag = 1;
         timerHandler.post(timerRunnable);
     }
-
-//    public void resetTimer(){
-//        remainingTime = TotalTime;
-//    }
 
     public void setTime(int time){
         remainingTime = time;

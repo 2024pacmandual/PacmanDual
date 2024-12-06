@@ -13,19 +13,17 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    private PacmanGame game, game2;
+    private PacmanGame game, opponent_game;
     private PacmanView pacmanView, pacmanView2;
     ImageView buttonUp, buttonDown, buttonLeft, buttonRight;
 
     private String gameMode;
 
-    private Thread gameLoopThread;
-
     private PacmanGame.PacmanState state, state2;
     private GameState LoopState;
 
 
-    private enum GameState {
+    private enum GameState { //import from Tetris GameState
         Error(-1), Initial(0), Running(1), Paused(2);
         private final int value;
         private GameState(int value) { this.value = value; }
@@ -53,18 +51,13 @@ public class MainActivity extends AppCompatActivity {
         if (gameMode == null ||gameMode.equals("SINGLE")) {
             Toast.makeText(this, "1인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
             game = new PacmanGame();
-            //pacmanView = findViewById(R.id.pacmanView);
-
             pacmanView2.setVisibility(View.GONE);
 
         } else if (gameMode == null ||gameMode.equals("TWO_PLAYER")) {
             Toast.makeText(this, "2인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
             game = new PacmanGame();
-            game2 = new PacmanGame();
+            opponent_game = new PacmanGame();
             startThread(runnable4LBThread);
-            //pacmanView = findViewById(R.id.pacmanView);
-            //pacmanView2 = findViewById(R.id.pacmanView2);
-            //enemy_game = new PacmanGame(3);
         }
 
 
@@ -80,21 +73,22 @@ public class MainActivity extends AppCompatActivity {
 
         // Pause 버튼 클릭 리스너
         pauseButton.setOnClickListener(view -> {
-            onPause(); // 게임 멈춤 기능 추가
+            LoopState = GameState.Paused; //LoopState의 상태를 pause로 전환하는 것만으로도 pause가능
             pauseButton.setVisibility(View.GONE);
             resumeButton.setVisibility(View.VISIBLE);
         });
 
         // Resume 버튼 클릭 리스너
         resumeButton.setOnClickListener(view -> {
-            onResume(); // 게임 재생 기능 추가
+            LoopState = GameState.Running; //running으로 전환 후 loop재시작
+            startGameLoop();
             resumeButton.setVisibility(View.GONE);
             pauseButton.setVisibility(View.VISIBLE);
         });
 
         // Exit 버튼 클릭 리스너
         exitButton.setOnClickListener(view -> {
-            finish(); // 액티비티 종료
+            finish();
         });
 
         buttonUp.setOnTouchListener((v, event) -> {
@@ -130,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return true;
         });
-        //startGameLoop();
         LoopState = GameState.Initial;
     }
 
@@ -158,16 +151,13 @@ public class MainActivity extends AppCompatActivity {
             try {
                 char key = (char) msg.arg1;
                 Log.d("MainThread", "key: " + key);
-//                mirrorPeer(key);
+                //mirrorPeer(key);
                 switch (key) {
-                    case 'U': game2.onTouchAccept("UP"); break;
-                    case 'D': game2.onTouchAccept("DOWN"); break;
-                    case 'L': game2.onTouchAccept("LEFT"); break;
-                    case 'R': game2.onTouchAccept("RIGHT"); break;
+                    case 'U': opponent_game.onTouchAccept("UP"); break;
+                    case 'D': opponent_game.onTouchAccept("DOWN"); break;
+                    case 'L': opponent_game.onTouchAccept("LEFT"); break;
+                    case 'R': opponent_game.onTouchAccept("RIGHT"); break;
                 }
-
-//                runOnUiThread(() -> pacmanView2.invalidate());
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -199,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
         LoopState = GameState.Running;
         game.timer.startTimer();
         if (gameMode.equals("TWO_PLAYER")) {
-            game2.timer.startTimer();
+            opponent_game.timer.startTimer();
         }
     }
 
@@ -207,10 +197,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         LoopState = GameState.Paused;
-        handler.removeCallbacks(gameLoopRunnable); // 루프 중단
+        handler.removeCallbacks(gameLoopRunnable);
         game.timer.stopTimer(0);
         if (gameMode.equals("TWO_PLAYER")) {
-            game2.timer.stopTimer(0);
+            opponent_game.timer.stopTimer(0);
         }
     }
 
@@ -218,10 +208,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         LoopState = GameState.Running;
-        startGameLoop(); // 게임 루프 재시작
+        startGameLoop();
         game.timer.startTimer();
         if (gameMode.equals("TWO_PLAYER")) {
-            game2.timer.startTimer();
+            opponent_game.timer.startTimer();
         }
     }
 
@@ -235,44 +225,38 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    // Handler와 Runnable 추가
+
     private final Handler handler = new Handler(Looper.getMainLooper());
     private Runnable gameLoopRunnable = new Runnable() {
         @Override
         public void run() {
             if (LoopState == GameState.Running) {
-                // 게임 상태 업데이트
+
                 state = game.updateGameState();
                 if (gameMode.equals("TWO_PLAYER")) {
-                    state2 = game2.updateGameState();
+                    state2 = opponent_game.updateGameState();
                 }
-//                Log.d("pacmanGame on loop", "pacman state " + state);
-//                Log.d("pacmanGame on loop", "game state(UI state) " + LoopState);
 
                 pacmanView.getScreenState(game.getScreen());
                 if (gameMode.equals("TWO_PLAYER")) {
-                    pacmanView2.getScreenState(game2.getScreen());
+                    pacmanView2.getScreenState(opponent_game.getScreen());
                 }
-//                pacmanView2.getScreenState(game.getScreen()); // 서버로부터 상태 받는 부분은 후속 구현 필요.
 
-                // 게임 상태 확인
                 if (state == PacmanGame.PacmanState.finished ||
                         (gameMode.equals("TWO_PLAYER") && (state2 == PacmanGame.PacmanState.finished))) {
-//                    state2 = state;
                     LoopState = GameState.Paused;
                     Intent intent = new Intent(MainActivity.this, EndActivity.class);
                     intent.putExtra("GAME_RESULT", game.getResult());
                     intent.putExtra("GAME_MODE", gameMode);
                     startActivity(intent);
                     finish();
-                    return; // 다음 타이머 호출 방지
+                    return;
                 } else if (state == PacmanGame.PacmanState.NextStage ||
                         (gameMode.equals("TWO_PLAYER") && state2 == PacmanGame.PacmanState.NextStage)) {
 
-                    // 다음 스테이지 처리 (현재는 구현되지 않음)
                     if(game.toNextLevel() == 0 ||
-                            (gameMode.equals("TWO_PLAYER") && game2.toNextLevel() == 0)
-                    ){ //레벨3까지 완료
+                            (gameMode.equals("TWO_PLAYER") && opponent_game.toNextLevel() == 0)
+                    ){
                         Intent intent = new Intent(MainActivity.this, EndActivity.class);
                         intent.putExtra("GAME_RESULT", game.getResult());
                         intent.putExtra("GAME_MODE", gameMode);
@@ -282,22 +266,20 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         pacmanView.invalidate();
                         if (gameMode.equals("TWO_PLAYER")) {
-                            pacmanView2.getScreenState(game2.getScreen());
+                            pacmanView2.getScreenState(opponent_game.getScreen());
                         }
-//                        pacmanView2.invalidate();
+
                     });
                 }
 
                 // 화면 갱신
                 runOnUiThread(() -> {
                     pacmanView.invalidate();
-//                    pacmanView2.invalidate(); // PacmanView의 onDraw() 호출
                     if (gameMode.equals("TWO_PLAYER")) {
-                        pacmanView2.getScreenState(game2.getScreen());
+                        pacmanView2.getScreenState(opponent_game.getScreen());
                     }
                 });
 
-                // 100ms 후에 다음 게임 루프 실행
                 handler.postDelayed(this, 100);
             }
         }
@@ -305,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startGameLoop() {
         if (LoopState == GameState.Running) {
-            handler.post(gameLoopRunnable); // 게임 루프 시작
+            handler.post(gameLoopRunnable);
         }
     }
 

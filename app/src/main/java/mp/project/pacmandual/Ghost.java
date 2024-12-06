@@ -68,17 +68,15 @@ public class Ghost {
             int newY = move[0];
             int newX = move[1];
 
-            // 유클리드 거리 계산
+            // 유클리드 거리 기반
             double distance = Math.sqrt(Math.pow(newY - py, 2) + Math.pow(newX - px, 2));
 
-            // 더 가까운 거리를 가진 좌표로 업데이트
             if (distance < minDistance) {
                 minDistance = distance;
                 bestMove = move;
             }
         }
 
-        // 선택된 위치로 고스트 이동
         if (bestMove != null) {
             this.ghostY = bestMove[0];
             this.ghostX = bestMove[1];
