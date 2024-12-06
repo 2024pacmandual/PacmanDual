@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String gameMode;
 
-    private PacmanGame.PacmanState state, state2;
+    private PacmanGame.PacmanState state, opponent_state;
     private GameState LoopState;
 
 
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 public void handleMessage(Message msg) {
                     try {
                         char key = (char) msg.arg1;
-                        Log.d("LBThread", "key: " + key);
+                        //Log.d("LBThread", "key: " + key);
                         sendToMain(key);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -233,30 +233,27 @@ public class MainActivity extends AppCompatActivity {
             if (LoopState == GameState.Running) {
 
                 state = game.updateGameState();
-                if (gameMode.equals("TWO_PLAYER")) {
-                    state2 = opponent_game.updateGameState();
-                }
-
                 pacmanView.getScreenState(game.getScreen());
+
                 if (gameMode.equals("TWO_PLAYER")) {
+                    opponent_state = opponent_game.updateGameState();
                     pacmanView2.getScreenState(opponent_game.getScreen());
                 }
-
                 if (state == PacmanGame.PacmanState.finished ||
-                        (gameMode.equals("TWO_PLAYER") && (state2 == PacmanGame.PacmanState.finished))) {
+                        (gameMode.equals("TWO_PLAYER") && (opponent_state == PacmanGame.PacmanState.finished))) {
                     LoopState = GameState.Paused;
                     Intent intent = new Intent(MainActivity.this, EndActivity.class);
                     intent.putExtra("GAME_RESULT", game.getResult());
                     intent.putExtra("GAME_MODE", gameMode);
+                    if (gameMode.equals("TWO_PLAYER")) intent.putExtra("GAME_RESULT_OP", opponent_game.getResult());
+
                     startActivity(intent);
                     finish();
                     return;
                 } else if (state == PacmanGame.PacmanState.NextStage ||
-                        (gameMode.equals("TWO_PLAYER") && state2 == PacmanGame.PacmanState.NextStage)) {
-
+                        (gameMode.equals("TWO_PLAYER") && opponent_state == PacmanGame.PacmanState.NextStage)) {
                     if(game.toNextLevel() == 0 ||
-                            (gameMode.equals("TWO_PLAYER") && opponent_game.toNextLevel() == 0)
-                    ){
+                            (gameMode.equals("TWO_PLAYER") && opponent_game.toNextLevel() == 0)) {
                         Intent intent = new Intent(MainActivity.this, EndActivity.class);
                         intent.putExtra("GAME_RESULT", game.getResult());
                         intent.putExtra("GAME_MODE", gameMode);
