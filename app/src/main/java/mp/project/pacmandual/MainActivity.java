@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
     private String gameMode;
 
     private Thread gameLoopThread;
-    private boolean isRunning = false;
 
     private PacmanGame.PacmanState state, state2;
     private GameState LoopState;
@@ -207,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        isRunning = false;
         LoopState = GameState.Paused;
         handler.removeCallbacks(gameLoopRunnable); // 루프 중단
         game.timer.stopTimer(0);
@@ -225,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         if (gameMode.equals("TWO_PLAYER")) {
             game2.timer.startTimer();
         }
-        }
+    }
 
 
 
@@ -242,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
     private Runnable gameLoopRunnable = new Runnable() {
         @Override
         public void run() {
-            if (isRunning) {
+            if (LoopState == GameState.Running) {
                 // 게임 상태 업데이트
                 state = game.updateGameState();
                 if (gameMode.equals("TWO_PLAYER")) {
@@ -261,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
                 if (state == PacmanGame.PacmanState.finished ||
                         (gameMode.equals("TWO_PLAYER") && (state2 == PacmanGame.PacmanState.finished))) {
 //                    state2 = state;
-                    isRunning = false;
+                    LoopState = GameState.Paused;
                     Intent intent = new Intent(MainActivity.this, EndActivity.class);
                     intent.putExtra("GAME_RESULT", game.getResult());
                     intent.putExtra("GAME_MODE", gameMode);
@@ -306,49 +304,9 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void startGameLoop() {
-        if (!isRunning) {
-            isRunning = true;
+        if (LoopState == GameState.Running) {
             handler.post(gameLoopRunnable); // 게임 루프 시작
         }
     }
-
-
-
-//    private void startGameLoop() {
-//        if (gameLoopThread == null || !gameLoopThread.isAlive()) {
-//            gameLoopThread = new Thread(() -> {
-//                while (isRunning) {
-//                    try {
-//
-//                        state = game.updateGameState();
-//                        Log.d("pacmanGame on loop", "game state" + state);
-//                        pacmanView.getScreenState(game.getScreen());
-//                        pacmanView2.getScreenState(game.getScreen()); //서버로 부터 screenState를 받도록 고쳐야함.
-//
-//                        if (state == PacmanGame.PacmanState.finished){
-//                            isRunning = false;
-//
-//                            Intent intent = new Intent(this, EndActivity.class);
-//                            intent.putExtra("GAME_RESULT", game.getResult());
-//                            startActivity(intent);
-//                            finish();
-//                        } else if (state == PacmanGame.PacmanState.NextStage) {
-//
-//                        }
-//
-//                        runOnUiThread(() -> {
-//                            pacmanView.invalidate();
-//                            pacmanView2.invalidate();// PacmanView의 onDraw() 호출
-//                        });
-//                        Thread.sleep(100); // 게임 루프 간격 설정
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//            gameLoopThread.start();
-//        }
-//
-//    }
 
 }
