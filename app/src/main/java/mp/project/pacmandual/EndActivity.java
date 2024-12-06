@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 public class EndActivity extends AppCompatActivity {
 
@@ -35,17 +36,43 @@ public class EndActivity extends AppCompatActivity {
         twoPlayerScoreLayout = findViewById(R.id.twoPlayerScoreLayout);
         buttonLayout = findViewById(R.id.buttonLayout);
 
-        int[] endInfo;
+        int[] endInfo, Opponent_endInfo;
         String prevMode;
 
         endInfo = getIntent().getIntArrayExtra("GAME_RESULT");
+        Opponent_endInfo = getIntent().getIntArrayExtra("GAME_RESULT_OP");
         prevMode = getIntent().getStringExtra("GAME_MODE");
         if (endInfo != null){
-            if (prevMode.equals("TWO_PLAYER")) {
+            if (prevMode.equals("TWO_PLAYER") && Opponent_endInfo != null) {
+
+                if (endInfo[0] > Opponent_endInfo[0]){
+                    player1ScoreText.setTextColor(ContextCompat.getColor(this, R.color.green));
+                    player2ScoreText.setTextColor(ContextCompat.getColor(this, R.color.red));
+                } else if (endInfo[0] < Opponent_endInfo[0]){
+                    player1ScoreText.setTextColor(ContextCompat.getColor(this, R.color.red));
+                    player2ScoreText.setTextColor(ContextCompat.getColor(this, R.color.green));
+                } else{
+                    player1ScoreText.setTextColor(ContextCompat.getColor(this, R.color.green));
+                    player2ScoreText.setTextColor(ContextCompat.getColor(this, R.color.green));
+                }
+
+
+                if (endInfo[1] > Opponent_endInfo[1]){ //내가 이긴 경우
+                    player1ScoreText.setTextColor(ContextCompat.getColor(this, R.color.green));
+                    player2ScoreText.setTextColor(ContextCompat.getColor(this, R.color.red));
+                } else if (endInfo[1] < Opponent_endInfo[1]){ //내가 이긴 경우
+                    player1ScoreText.setTextColor(ContextCompat.getColor(this, R.color.red));
+                    player2ScoreText.setTextColor(ContextCompat.getColor(this, R.color.green));
+                } else{
+                    player1ScoreText.setTextColor(ContextCompat.getColor(this, R.color.green));
+                    player2ScoreText.setTextColor(ContextCompat.getColor(this, R.color.green));
+                }
+
+
                 totalScoreText.setVisibility(View.GONE);
                 twoPlayerScoreLayout.setVisibility(View.VISIBLE);
                 player1ScoreText.setText(getString(R.string.player1_score, endInfo[0]));
-                player2ScoreText.setText(getString(R.string.player2_score, endInfo[1]));
+                player2ScoreText.setText(getString(R.string.player2_score, Opponent_endInfo[0]));
             } else {
                 totalScoreText.setVisibility(View.VISIBLE);
                 twoPlayerScoreLayout.setVisibility(View.GONE);
@@ -54,13 +81,10 @@ public class EndActivity extends AppCompatActivity {
                 params.addRule(RelativeLayout.BELOW, R.id.totalScoreText);
                 buttonLayout.setLayoutParams(params);
             }
-//            totalScoreText.setText(getString(R.string.final_score, endInfo[0]));
-            //totalScoreText.setText(getString(R.string.remaining_time, endInfo[0]));
+
         } else {
             String r1 = "No score, got no Intent";
-            //String r2 = "No remaining time, got no Intent";
             totalScoreText.setText(r1);
-            //totalScoreText.setText(r2);
         }
 
 

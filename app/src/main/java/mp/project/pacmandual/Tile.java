@@ -1,7 +1,7 @@
 package mp.project.pacmandual;
 
 public class Tile {
-    private int type;  // -1: 벽, 1: 도트, 0: 빈 공간, 2: 파워펠렛
+    private int type;  // -1: 벽, 1: 도트, 0: 빈 공간
 
     public Tile(int type) {
         this.type = type;

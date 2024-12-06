@@ -5,8 +5,12 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+//******************************************************************************************
+//******************************************************************************************
+// 각각의 stage들은 -1, 0, 1을 모두 포함해야함.
+//******************************************************************************************
+//******************************************************************************************
 public class StageContainer {
-    //private int level;
     private List<int[][]> maps;
 
     public StageContainer(){
@@ -15,7 +19,6 @@ public class StageContainer {
     }
     public int[][] getMapArray(int level){
         if (level <= maps.size()){
-            //return maps.get(level-1);
             return maps.get(level-1);
         }
         else

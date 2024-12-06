@@ -37,7 +37,7 @@ public class PacmanView extends View {
     private boolean isinit;
 
     // Ghost 위치와 목표 위치
-    private Map<Ghost, float[]> ghostPositions; // 각 고스트의 현재 위치
+    private Map<Ghost, float[]> ghostPositions;
     private float ghostSpeed = 6.0f; // 고스트의 픽셀 단위 이동 속도
 
     public PacmanView(Context context, AttributeSet attrs) {
@@ -124,20 +124,18 @@ public class PacmanView extends View {
         screen = screenState;
         ghosts = screen.getGhosts();
         isinit = screen.isInit();
-        //Log.d("from view", "is Init " + screen.isInit());
         if (screen.isInit()) {
             pacmanX = screen.getPacmanX() * tileSize;
             pacmanY = screen.getPacmanY() * tileSize;
             pacmanDirection = screen.getPacmanDirection();
             targetPacmanX = pacmanX;
             targetPacmanY = pacmanY;
-            //isinit = false; // 초기 스폰 완료
+
         } else if (!isPacmanMoving) {
             pacmanDirection = screen.getPacmanDirection();
             targetPacmanX = screen.getPacmanX() * tileSize;
             targetPacmanY = screen.getPacmanY() * tileSize;
         }
-
         for (Ghost ghost : ghosts) {
             float[] currentPos = ghostPositions.getOrDefault(ghost, new float[]{ghost.getGhostX() * tileSize, ghost.getGhostY() * tileSize});
             ghostPositions.put(ghost, currentPos);
@@ -146,7 +144,6 @@ public class PacmanView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //Log.d("view", "onDraw");
         super.onDraw(canvas);
         if (screen == null) return;
         drawMap(canvas);
@@ -156,9 +153,9 @@ public class PacmanView extends View {
         drawScore(canvas);
         drawTimer(canvas);
 
-        // 애니메이션 업데이트
+
         updateAnimation();
-        invalidate(); // 다음 프레임을 요청
+        invalidate();
     }
 
     private void drawMap(Canvas canvas) {
@@ -218,10 +215,10 @@ public class PacmanView extends View {
     }
 
     private void drawLives(Canvas canvas) {
-        int lifeCount = screen.getLife(); // 남은 라이프 수
-        int startX = 20; // 시작 X 좌표
-        int startY = 20; // 시작 Y 좌표
-        int spacing = 10; // 아이콘 간 간격
+        int lifeCount = screen.getLife();
+        int startX = 20;
+        int startY = 20;
+        int spacing = 10;
 
         for (int i = 0; i < lifeCount; i++) {
             int x = startX + i * (lifeBitmap.getWidth() + spacing);
@@ -236,63 +233,57 @@ public class PacmanView extends View {
         scorePaint.setFakeBoldText(true);
 
         String scoreText = "Score: " + screen.getScore();
-        canvas.drawText(scoreText, 20, 100, scorePaint); // 화면 상단에 점수 표시
+        canvas.drawText(scoreText, 20, 100, scorePaint);
     }
 
     private void drawTimer(Canvas canvas) {
         Paint timerPaint = new Paint();
-        timerPaint.setColor(0xFFFF0000); // 빨간색
-        timerPaint.setTextSize(50); // 텍스트 크기
+        timerPaint.setColor(0xFFFF0000);
+        timerPaint.setTextSize(50);
         timerPaint.setFakeBoldText(true);
 
         String timerText = "Time: " + screen.getTime() + "s";
-        canvas.drawText(timerText, 20, 160, timerPaint); // 화면 상단에 시간 표시
+        canvas.drawText(timerText, 20, 160, timerPaint);
     }
 
     private void updateAnimation() {
-        // 팩맨 이동
         if (pacmanX != targetPacmanX || pacmanY != targetPacmanY) {
             isPacmanMoving = true;
 
-            // X축 이동
             if (pacmanX < targetPacmanX) {
                 pacmanX = Math.min(pacmanX + pacmanSpeed, targetPacmanX);
             } else if (pacmanX > targetPacmanX) {
                 pacmanX = Math.max(pacmanX - pacmanSpeed, targetPacmanX);
             }
 
-            // Y축 이동
             if (pacmanY < targetPacmanY) {
                 pacmanY = Math.min(pacmanY + pacmanSpeed, targetPacmanY);
             } else if (pacmanY > targetPacmanY) {
                 pacmanY = Math.max(pacmanY - pacmanSpeed, targetPacmanY);
             }
         } else {
-            isPacmanMoving = false; // 목표 위치에 도달하면 이동 종료
+            isPacmanMoving = false;
         }
 
-        // 고스트의 위치 업데이트
         for (Ghost ghost : ghosts) {
             float[] pos = ghostPositions.get(ghost);
             if (pos != null) {
                 float targetX = ghost.getGhostX() * tileSize;
                 float targetY = ghost.getGhostY() * tileSize;
 
-                // 고스트 X축 이동
                 if (pos[0] < targetX) {
                     pos[0] = Math.min(pos[0] + ghostSpeed, targetX);
                 } else if (pos[0] > targetX) {
                     pos[0] = Math.max(pos[0] - ghostSpeed, targetX);
                 }
 
-                // 고스트 Y축 이동
                 if (pos[1] < targetY) {
                     pos[1] = Math.min(pos[1] + ghostSpeed, targetY);
                 } else if (pos[1] > targetY) {
                     pos[1] = Math.max(pos[1] - ghostSpeed, targetY);
                 }
 
-                ghostPositions.put(ghost, pos); // 업데이트된 위치 저장
+                ghostPositions.put(ghost, pos);
             }
         }
     }

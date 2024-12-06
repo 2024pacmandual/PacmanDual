@@ -118,8 +118,6 @@ public class PacmanGame {
             pacmanX = newX;
             pacmanY = newY;
         }
-        //inputButton = "NONE"; //테스트용 코드
-
     }
 
     private boolean isMoveValid(int y, int x) {
@@ -150,7 +148,7 @@ public class PacmanGame {
                     map.get_Grid(), // 현재 맵 데이터
                     pacmanX,        // 팩맨의 X 좌표
                     pacmanY,        // 팩맨의 Y 좌표
-                    pacmanDirection,
+                    pacmanDirection, //이동방향에 따라 다르게 팩맨을 그림
                     ghosts,         // 고스트 리스트
                     score,           // 현재 점수
                     lifeCounter.getLives(),
@@ -159,12 +157,12 @@ public class PacmanGame {
             );
         }
         return new ScreenState(
-                map.get_Grid(), // 현재 맵 데이터
-                pacmanX,        // 팩맨의 X 좌표
-                pacmanY,        // 팩맨의 Y 좌표
+                map.get_Grid(),
+                pacmanX,
+                pacmanY,
                 pacmanDirection,
-                ghosts,         // 고스트 리스트
-                score,           // 현재 점수
+                ghosts,
+                score,
                 lifeCounter.getLives(),
                 timer.getRemainingTime(),
                 false
@@ -176,7 +174,7 @@ public class PacmanGame {
         int final_score = (remaining_life * 30) + score;
         int remaining_time = timer.getRemainingTime();
 
-        int[] tot_result = {final_score, remaining_time};
+        int[] tot_result = {final_score, remaining_life};
         return tot_result;
     }
 
@@ -204,16 +202,16 @@ public class PacmanGame {
     }
 
     public static class ScreenState {
-        private final Tile[][] mapArray;  // 맵 데이터
-        private final int pacmanX;       // 팩맨의 X 좌표
-        private final int pacmanY;       // 팩맨의 Y 좌표
-        private final List<Ghost> ghosts; // 고스트 리스트
-        private final int score;         // 현재 점수
+        private final Tile[][] mapArray;
+        private final int pacmanX;
+        private final int pacmanY;
+        private final List<Ghost> ghosts;
+        private final int score;
         private final int life;
         private final int time;
         private final boolean isInit;
         private final String pacmanDirection;
-        // ScreenState 생성자
+        // 생성자
         public ScreenState(Tile[][] mapArray, int pacmanX, int pacmanY, String pacmanDirection, List<Ghost> ghosts, int score, int life, int time, boolean isInit) {
             this.mapArray = mapArray;
             this.pacmanX = pacmanX;
@@ -227,30 +225,26 @@ public class PacmanGame {
         }
 
 
-        // 맵 데이터를 반환
+        // 맵 grid
         public Tile[][] getMapArray() {
             return mapArray;
         }
 
-        // 팩맨의 X 좌표 반환
         public int getPacmanX() {
             return pacmanX;
         }
 
-        // 팩맨의 Y 좌표 반환
         public int getPacmanY() {
             return pacmanY;
         }
 
-        // 팩맨의 이동 방향 반환
+        // 팩맨의 이동 방향
         public String getPacmanDirection() { return pacmanDirection; }
 
-        // 고스트 리스트 반환
         public List<Ghost> getGhosts() {
             return ghosts;
         }
 
-        // 현재 점수 반환
         public int getScore() {
             return score;
         }
