@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">PacmanDual</string>
+    <string name="player1_score">Your Score: %1$d</string>
+    <string name="player2_score">Opponent Score: %1$d</string>
 
-    <string name="final_score">Final Score: %1$d</string>
+    <string name="total_score">Total Score: %1$d</string>
     <string name="remaining_time">Remaining Time: %1$d</string>
 </resources>
