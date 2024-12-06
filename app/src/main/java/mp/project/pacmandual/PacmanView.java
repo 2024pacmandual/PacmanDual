@@ -64,29 +64,9 @@ public class PacmanView extends View {
             pacmanRight = Bitmap.createScaledBitmap(pacmanRightBitmap, tileSize, tileSize, true);
         }
 
-//        if (pacman == null) {
-//            pacman = BitmapFactory.decodeResource(getResources(), R.drawable.pacman);
-//        }
-//        if (pacmanUp == null) {
-//            pacmanUp = BitmapFactory.decodeResource(getResources(), R.drawable.up);
-//        }
-//        if (pacmanDown == null) {
-//            pacmanDown = BitmapFactory.decodeResource(getResources(), R.drawable.down);
-//        }
-//        if (pacmanLeft == null) {
-//            pacmanLeft = BitmapFactory.decodeResource(getResources(), R.drawable.left);
-//        }
-//        if (pacmanRight == null) {
-//            pacmanRight = BitmapFactory.decodeResource(getResources(), R.drawable.right);
-//        }
         init();
     }
 
-    public PacmanView(MainActivity context) {
-        super(context);
-        this.gameMode = gameMode;
-        init();
-    }
 
     public void init() {
         // 리소스에서 비트맵을 불러오고 타일 크기에 맞게 리사이즈
@@ -109,15 +89,9 @@ public class PacmanView extends View {
             pacmanRight = loadAndResizeBitmap(R.drawable.right, tileSize);
         }
 
-
-        Bitmap originalGhostBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ghost);
-        ghostBitmap = Bitmap.createScaledBitmap(originalGhostBitmap, tileSize, tileSize, true);
-
-        Bitmap SpectorBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.mare);
-        spectorBitmap = Bitmap.createScaledBitmap(SpectorBitmap, tileSize, tileSize, true);
-
-        Bitmap originalLifeBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.heart);
-        lifeBitmap = Bitmap.createScaledBitmap(originalLifeBitmap, tileSize, tileSize, true);
+        ghostBitmap = loadAndResizeBitmap(R.drawable.ghost, tileSize);
+        spectorBitmap = loadAndResizeBitmap(R.drawable.mare, tileSize);
+        lifeBitmap = loadAndResizeBitmap(R.drawable.heart, tileSize);
 
         wallPaint = new Paint();
         wallPaint.setColor(0xFF0000FF); // 파란색 (벽)
@@ -140,9 +114,10 @@ public class PacmanView extends View {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), resourceId);
         if (bitmap != null) {
             return Bitmap.createScaledBitmap(bitmap, size, size, true);
+        } else {
+            Log.e("PacmanView", "Failed to load bitmap: " + resourceId);
+            return null;
         }
-        Log.e("PacmanView", "Failed to load bitmap: " + resourceId);
-        return null;
     }
 
     public void getScreenState(PacmanGame.ScreenState screenState) {
@@ -225,15 +200,6 @@ public class PacmanView extends View {
             Log.e("PacmanView", "Pacman bitmap is not available!");
         }
 
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (pacman != null && !pacman.isRecycled()) {
-            pacman.recycle();
-            pacman = null;
-        }
     }
 
     private void drawGhosts(Canvas canvas) {
