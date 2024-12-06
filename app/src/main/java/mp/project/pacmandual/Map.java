@@ -6,7 +6,7 @@ import java.util.Random;
 
 //******************************************************************************************
 //******************************************************************************************
-// 각 타일을 초기화할 때, -1은 벽, 1은 도트, 0은 빈 타일을 의미함. 고스트와 팩맨 간의 충돌은 따로 구현해야함.
+// 각 타일을 초기화할 때, -1은 벽, 1은 도트, 0은 빈 타일을 의미함. 고스트와 팩맨 간의 충돌은 따로 구현.
 //******************************************************************************************
 //******************************************************************************************
 public class Map {
@@ -15,7 +15,7 @@ public class Map {
     private int dx;
 
     private int[] pacmanSpawnCoord;  // 팩맨의 초기 스폰 좌표
-    private List<int[]> ghostSpawnsCoords;
+    private List<int[]> ghostSpawnsCoords; // 고스트들의 초기 스폰 좌표
 
     public int get_dy() { return dy; }
     public int get_dx() { return dx; }
@@ -68,7 +68,7 @@ public class Map {
     public int getDotCount(){
         return this.dotCount;
     }
-    // 주어진 2D 배열을 이용해 맵 초기화
+    
     public Map(int[][] mapArray,int n_ghost) {
         TileAlloc(mapArray.length, mapArray[0].length);
         for (int i = 0; i < dy; i++) {
