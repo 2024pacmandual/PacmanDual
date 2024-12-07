@@ -14,8 +14,8 @@ public class Map {
     private int dy;
     private int dx;
 
-    private int[] pacmanSpawnCoord;  // 팩맨의 초기 스폰 좌표
-    private List<int[]> ghostSpawnsCoords; // 고스트들의 초기 스폰 좌표
+    private final int[] pacmanSpawnCoord;  // 팩맨의 초기 스폰 좌표
+    private final List<int[]> ghostSpawnsCoords; // 고스트들의 초기 스폰 좌표
 
     public int get_dy() { return dy; }
     public int get_dx() { return dx; }

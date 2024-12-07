@@ -38,10 +38,6 @@ public class PacmanGame {
 
         initializeMap(level);
         this.score = 0;
-
-        int[] pacmanSpawn = map.get_pacmanSpawnCoord();
-        pacmanY = pacmanSpawn[0];
-        pacmanX = pacmanSpawn[1];
         lifeCounter = new LifeManager();
 
 
@@ -51,6 +47,7 @@ public class PacmanGame {
     private void initializeMap(int level) {
         int[][] array;
         int n_ghost = level;
+
         if((array = stage.getMapArray(level)) == null) {
             return;
         }
@@ -61,19 +58,22 @@ public class PacmanGame {
             ghosts.add(new Ghost(map, coord[0], coord[1]));
         }
 
+        int[] pacmanSpawn = map.get_pacmanSpawnCoord();
+        pacmanY = pacmanSpawn[0];
+        pacmanX = pacmanSpawn[1];
+
     }
 
     public PacmanState updateGameState() {
         if (g_state == PacmanState.Init) g_state = PacmanState.Running;
 
         movePacman();
-        if (lifeCounter.getLives() <= 0){
+        if (lifeCounter.getLives() <= 0 || (timer.getTimerFlag() < 0) && level == 3){
             g_state = PacmanState.finished;
         } else if (level < 3 && ((map.getDotCount() <= 0) || (timer.getTimerFlag() < 0))) {
             if (lifeCounter.getLives() > 0) g_state = PacmanState.NextStage;
-        } else if ((timer.getTimerFlag() < 0) && level == 3) {
-            g_state = PacmanState.finished;
         }
+
         if(getCaught() && timeAfterCaught > 4) {
             lifeCounter.decreaseLife();
             timeAfterCaught = 0;
@@ -187,9 +187,7 @@ public class PacmanGame {
 
         timer.setTime(level*30);
         initializeMap(level);
-        int[] pacmanSpawn = map.get_pacmanSpawnCoord();
-        pacmanY = pacmanSpawn[0];
-        pacmanX = pacmanSpawn[1];
+
 
         timer.startTimer();
 

@@ -186,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        LoopState = GameState.Running;
         game.timer.startTimer();
         if (gameMode.equals("TWO_PLAYER")) {
             opponent_game.timer.startTimer();
@@ -263,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         pacmanView.invalidate();
                         if (gameMode.equals("TWO_PLAYER")) {
-                            pacmanView2.getScreenState(opponent_game.getScreen());
+                            pacmanView2.invalidate();
                         }
 
                     });
@@ -276,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
                         pacmanView2.getScreenState(opponent_game.getScreen());
                     }
                 });
-
+                if (LoopState != GameState.Running){LoopState = GameState.Error;}
                 handler.postDelayed(this, 100);
             }
         }
