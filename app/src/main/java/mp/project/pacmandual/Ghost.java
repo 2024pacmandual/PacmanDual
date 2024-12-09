@@ -1,7 +1,5 @@
 package mp.project.pacmandual;
 
-import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -27,7 +25,6 @@ public class Ghost {
         this.ghostX = ghostX;
         this.ghostY = ghostY;
         if (type == 1){
-            Log.d("tag", "Ghost: nighmare");
             this.speed=0;
         }
     }

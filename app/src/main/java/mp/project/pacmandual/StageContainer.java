@@ -88,10 +88,6 @@ public class StageContainer {
         array3[22] = new int[] {-1,  0,  1,  1,  1,  1,  1,  1,  1, -1,  1,  1,  1, -1,  1,  1,  1,  1,  0, -1};
         array3[23] = new int[] {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
 
-
-        Log.d("StageContainer", "array size: " + array.length + "x" + array[0].length);
-        Log.d("StageContainer", "array2 size: " + array2.length + "x" + array2[0].length);
-        Log.d("StageContainer", "array3 size: " + array3.length + "x" + array3[0].length);
         maps.add(array);
         maps.add(array2);
         maps.add(array3);

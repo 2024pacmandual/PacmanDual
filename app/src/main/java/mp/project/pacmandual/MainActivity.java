@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private String gameMode;
 
     private PacmanGame.PacmanState state, opponent_state;
-    private GameState LoopState;
+    private GameState LoopState, savedState;
 
 
     private enum GameState { //import from Tetris GameState
@@ -186,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart(){
         super.onStart();
-        LoopState = GameState.Running;
         game.timer.startTimer();
         if (gameMode.equals("TWO_PLAYER")) {
             opponent_game.timer.startTimer();
@@ -233,11 +232,13 @@ public class MainActivity extends AppCompatActivity {
             if (LoopState == GameState.Running) {
 
                 state = game.updateGameState();
-                pacmanView.getScreenState(game.getScreen());
+                updateView(game, pacmanView);
+
+
 
                 if (gameMode.equals("TWO_PLAYER")) {
                     opponent_state = opponent_game.updateGameState();
-                    pacmanView2.getScreenState(opponent_game.getScreen());
+                    updateView(opponent_game, pacmanView2);
                 }
                 if (state == PacmanGame.PacmanState.finished ||
                         (gameMode.equals("TWO_PLAYER") && (opponent_state == PacmanGame.PacmanState.finished))) {
@@ -263,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(() -> {
                         pacmanView.invalidate();
                         if (gameMode.equals("TWO_PLAYER")) {
-                            pacmanView2.getScreenState(opponent_game.getScreen());
+                            pacmanView2.invalidate();
                         }
 
                     });
@@ -273,10 +274,10 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     pacmanView.invalidate();
                     if (gameMode.equals("TWO_PLAYER")) {
-                        pacmanView2.getScreenState(opponent_game.getScreen());
+                        pacmanView2.invalidate();
                     }
                 });
-
+                if (LoopState != GameState.Running){LoopState = GameState.Error;}
                 handler.postDelayed(this, 100);
             }
         }
@@ -288,4 +289,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void updateView(PacmanGame game, PacmanView view){
+        PacmanGame.ScreenState screenState = game.getScreen();
+        view.getScreenState(screenState); // View로 전달
+    }
 }
