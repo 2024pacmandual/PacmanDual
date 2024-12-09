@@ -17,7 +17,7 @@ public class PacmanGame {
 
     private List<Ghost> ghosts;
     private Map map;
-    private LifeManager lifeCounter;
+    private final LifeManager lifeCounter;
     private final StageContainer stage = new StageContainer();
     private int level = 1;
 
