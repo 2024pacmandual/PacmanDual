@@ -113,6 +113,7 @@ public class PacmanGame {
             Tile tile = map.getTile(newY, newX);
             if (tile.hasDot()) {
                 tile.consumeDot();
+                map.dotCount--;
                 score += 1;
             }
             pacmanX = newX;
