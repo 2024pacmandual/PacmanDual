@@ -22,7 +22,7 @@ public class Map {
     public int[] get_pacmanSpawnCoord() { return pacmanSpawnCoord; }
     public List<int[]> get_ghostSpawnsCoords() { return ghostSpawnsCoords; }
 
-    private int dotCount = 0;
+    public int dotCount = 0;
 
 
     public Tile[][] get_Grid() { return grid; }
