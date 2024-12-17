@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- IP 주소 입력 -->
+    <EditText
+        android:id="@+id/inputServerIP"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="서버 IP 주소"
+        android:inputType="text"
+        android:padding="12dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- 포트 번호 입력 -->
+    <EditText
+        android:id="@+id/inputServerPort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="서버 포트 번호"
+        android:inputType="number"
+        android:padding="12dp" />
+</LinearLayout>

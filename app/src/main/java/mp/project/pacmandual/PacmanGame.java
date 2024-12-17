@@ -1,6 +1,7 @@
 
 package mp.project.pacmandual;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,7 +93,6 @@ public class PacmanGame {
             timeAfterCaught = 0;
         } //ghost한테 잡힘
         timeAfterCaught++;
-
         return g_state;
     }
 
@@ -200,7 +200,8 @@ public class PacmanGame {
         return 1;
     }
 
-    public static class ScreenState {
+    public static class ScreenState implements Serializable {
+        private static final long serialVersionUID = 1L;
         private final Tile[][] mapArray;
         private final int pacmanX;
         private final int pacmanY;

@@ -73,6 +73,7 @@ public class EndActivity extends AppCompatActivity {
                 twoPlayerScoreLayout.setVisibility(View.VISIBLE);
                 player1ScoreText.setText(getString(R.string.player1_score, endInfo[0]));
                 player2ScoreText.setText(getString(R.string.player2_score, Opponent_endInfo[0]));
+                restartGameButton.setVisibility(View.GONE);
             } else {
                 totalScoreText.setVisibility(View.VISIBLE);
                 twoPlayerScoreLayout.setVisibility(View.GONE);
@@ -95,6 +96,7 @@ public class EndActivity extends AppCompatActivity {
         restartGameButton.setOnClickListener(v -> {
             Intent intent = new Intent(EndActivity.this, MainActivity.class);
             intent.putExtra("GAME_MODE", prevMode);
+
             startActivity(intent);
             finish();
         });

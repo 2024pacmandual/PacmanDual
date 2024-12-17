@@ -1,10 +1,12 @@
 package mp.project.pacmandual;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Ghost {
+public class Ghost implements Serializable {
+    private static final long serialVersionUID = 1L;
     private int ghostX;
     private int ghostY;
     public int type;

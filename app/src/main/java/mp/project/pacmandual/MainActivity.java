@@ -12,12 +12,21 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+
 public class MainActivity extends AppCompatActivity {
     private PacmanGame game, opponent_game;
     private PacmanView pacmanView, pacmanView2;
     ImageView buttonUp, buttonDown, buttonLeft, buttonRight;
 
     private String gameMode;
+    private int pauseSync=0;
+
+    private String servHostName;
+    private int servPortNo;
 
     private PacmanGame.PacmanState state, opponent_state;
     private GameState LoopState, savedState;
@@ -44,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         gameMode = getIntent().getStringExtra("GAME_MODE");
+        servHostName = getIntent().getStringExtra("SERVER_IP");
+        servPortNo = getIntent().getIntExtra("SERVER_PORT", 1111);
 
         setContentView(R.layout.activity_main);
         pacmanView = findViewById(R.id.pacmanView);
@@ -53,11 +64,14 @@ public class MainActivity extends AppCompatActivity {
             game = new PacmanGame();
             pacmanView2.setVisibility(View.GONE);
 
-        } else if (gameMode == null ||gameMode.equals("TWO_PLAYER")) {
+        } else if (gameMode.equals("TWO_PLAYER")) {
             Toast.makeText(this, "2인 모드로 시작합니다.", Toast.LENGTH_SHORT).show();
             game = new PacmanGame();
             opponent_game = new PacmanGame();
-            startThread(runnable4LBThread);
+
+
+            startThread(runnable4RecvThread); // launch RecvThread before SendThread
+            startThread(runnable4SendThread); // launch SendThread
         }
 
 
@@ -66,13 +80,14 @@ public class MainActivity extends AppCompatActivity {
         buttonDown = findViewById(R.id.buttonDown);
         buttonLeft = findViewById(R.id.buttonLeft);
         buttonRight = findViewById(R.id.buttonRight);
-      
+
         ImageView pauseButton = findViewById(R.id.pauseButton);
         ImageView resumeButton = findViewById(R.id.resumeButton);
         ImageView exitButton = findViewById(R.id.exitButton);
 
         // Pause 버튼 클릭 리스너
         pauseButton.setOnClickListener(view -> {
+            pauseSync = 1;
             LoopState = GameState.Paused; //LoopState의 상태를 pause로 전환하는 것만으로도 pause가능
             pauseButton.setVisibility(View.GONE);
             resumeButton.setVisibility(View.VISIBLE);
@@ -88,6 +103,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Exit 버튼 클릭 리스너
         exitButton.setOnClickListener(view -> {
+            if (gameMode.equals("TWO_PLAYER")) {
+                sendToPeer('Q'); // 서버에 종료 문자 전송
+                disconnectServer(); // 서버와의 연결 종료
+            }
             finish();
         });
 
@@ -127,68 +146,13 @@ public class MainActivity extends AppCompatActivity {
         LoopState = GameState.Initial;
     }
 
-    private void startThread(Runnable runnable) {
-        Thread thread = new Thread(runnable);
-        thread.setDaemon(true);
-        thread.start();
-    }
-
-    private void sendMessage(Handler h, int type, char key) {
-        Message msg = Message.obtain(h,type);
-        msg.arg1 = key;
-        h.sendMessage(msg);
-    }
-
-    private void sendToPeer(char key) {
-        sendMessage(handler4LBThread, 1, key);
-    }
-    private void sendToMain(char key) {
-        sendMessage(handler4MainThread, 1, key);
-    }
-
-    private Handler handler4MainThread = new Handler(Looper.getMainLooper()) {
-        public void handleMessage(Message msg) {
-            try {
-                char key = (char) msg.arg1;
-                Log.d("MainThread", "key: " + key);
-                //mirrorPeer(key);
-                switch (key) {
-                    case 'U': opponent_game.onTouchAccept("UP"); break;
-                    case 'D': opponent_game.onTouchAccept("DOWN"); break;
-                    case 'L': opponent_game.onTouchAccept("LEFT"); break;
-                    case 'R': opponent_game.onTouchAccept("RIGHT"); break;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-    private Handler handler4LBThread; // LB Thread가 사용하는 hanlder
-    private Runnable runnable4LBThread = new Runnable() {
-        @Override
-        public void run() {
-            Looper.prepare();
-            handler4LBThread = new Handler(Looper.myLooper()) {
-                public void handleMessage(Message msg) {
-                    try {
-                        char key = (char) msg.arg1;
-                        //Log.d("LBThread", "key: " + key);
-                        sendToMain(key);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-            Looper.loop();
-        }
-    };
     @Override
     protected void onStart(){
         super.onStart();
         game.timer.startTimer();
         if (gameMode.equals("TWO_PLAYER")) {
-            opponent_game.timer.startTimer();
+            new Handler(Looper.getMainLooper()).postDelayed(() -> sendToPeer('S'), 200);
+            //opponent_game.timer.startTimer();
         }
     }
 
@@ -206,7 +170,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        LoopState = GameState.Running;
+        if (pauseSync != 1)
+            LoopState = GameState.Running;
         startGameLoop();
         game.timer.startTimer();
         if (gameMode.equals("TWO_PLAYER")) {
@@ -243,13 +208,18 @@ public class MainActivity extends AppCompatActivity {
                 if (state == PacmanGame.PacmanState.finished ||
                         (gameMode.equals("TWO_PLAYER") && (opponent_state == PacmanGame.PacmanState.finished))) {
                     LoopState = GameState.Paused;
-                    Intent intent = new Intent(MainActivity.this, EndActivity.class);
-                    intent.putExtra("GAME_RESULT", game.getResult());
-                    intent.putExtra("GAME_MODE", gameMode);
-                    if (gameMode.equals("TWO_PLAYER")) intent.putExtra("GAME_RESULT_OP", opponent_game.getResult());
+//                    Intent intent = new Intent(MainActivity.this, EndActivity.class);
+//                    intent.putExtra("GAME_RESULT", game.getResult());
+//                    intent.putExtra("GAME_MODE", gameMode);
+                    if (gameMode.equals("TWO_PLAYER")) {
+//                        intent.putExtra("GAME_RESULT_OP", opponent_game.getResult());
+                        sendToPeer('Q');
+                        disconnectServer();
+                    }
+                    navigateToEndScreen();
 
-                    startActivity(intent);
-                    finish();
+//                    startActivity(intent);
+//                    finish();
                     return;
                 } else if (state == PacmanGame.PacmanState.NextStage ||
                         (gameMode.equals("TWO_PLAYER") && opponent_state == PacmanGame.PacmanState.NextStage)) {
@@ -270,7 +240,6 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
 
-                // 화면 갱신
                 runOnUiThread(() -> {
                     pacmanView.invalidate();
                     if (gameMode.equals("TWO_PLAYER")) {
@@ -278,10 +247,36 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 if (LoopState != GameState.Running){LoopState = GameState.Error;}
+                if(LoopState == GameState.Error){
+                    navigateToStartScreen();
+                    return;
+                }
                 handler.postDelayed(this, 100);
             }
         }
     };
+
+    private void navigateToStartScreen() {
+        runOnUiThread(() -> {
+            Toast.makeText(MainActivity.this, "서버 연결이 끊어졌습니다. 시작 화면으로 돌아갑니다.", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, StartActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // 기존 액티비티 스택 제거
+            startActivity(intent);
+            finish(); // 현재 게임 화면 종료
+        });
+    }
+
+    // 종료 화면으로 이동하는 메서드
+    private void navigateToEndScreen() {
+        Intent intent = new Intent(MainActivity.this, EndActivity.class);
+        intent.putExtra("GAME_RESULT", game.getResult());
+        intent.putExtra("GAME_MODE", gameMode);
+        if (gameMode.equals("TWO_PLAYER")) {
+            intent.putExtra("GAME_RESULT_OP", opponent_game.getResult());
+        }
+        startActivity(intent);
+        finish();
+    }
 
     private void startGameLoop() {
         if (LoopState == GameState.Running) {
@@ -293,4 +288,148 @@ public class MainActivity extends AppCompatActivity {
         PacmanGame.ScreenState screenState = game.getScreen();
         view.getScreenState(screenState); // View로 전달
     }
+
+//server
+    private void startThread(Runnable runnable) {
+        Thread thread = new Thread(runnable);
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private void sendMessage(Handler h, int type, char key) {
+        Message msg = Message.obtain(h,type);
+        msg.arg1 = key;
+        h.sendMessage(msg);
+    }
+    public void sendToPeer(char key) {
+        sendMessage(handler4SendThread, 1, key);
+    }
+    private void sendToMain(char key) {
+        sendMessage(handler4MainThread, 1, key);
+    }
+    private Socket socket = null;
+    private final int maxWaitingTime = 3000; // 3 seconds
+    private DataOutputStream outStream = null;
+    private DataInputStream inStream = null;
+    private Object socketReady = new Object();
+    private Object inStreamReady = new Object();
+
+    private void _disconnectServer() {
+        try {
+            if (outStream != null) outStream.close();
+            if (inStream != null) inStream.close();
+            if (socket != null) socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        outStream = null;
+        inStream = null;
+        socket = null;
+    }
+    private void disconnectServer() {
+        synchronized(socketReady) {
+            _disconnectServer();
+        }
+    }
+    private boolean connectServer() {
+        synchronized(socketReady) {
+            try {
+                socket = new Socket();
+                socket.connect(new InetSocketAddress(servHostName, servPortNo), maxWaitingTime);
+                outStream = new DataOutputStream(socket.getOutputStream());
+                inStream = new DataInputStream(socket.getInputStream());
+                synchronized (inStreamReady) {
+                    inStreamReady.notify();
+                }
+                return true;
+            } catch (Exception e) {
+                _disconnectServer();
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
+    private Handler handler4SendThread = null; // handler for Loopback Thread
+
+    private Runnable runnable4SendThread = new Runnable() { // runnable for SendThread
+        @Override
+        public void run() {
+            Looper.prepare(); // The message loop is ready.
+            handler4SendThread = new Handler(Looper.myLooper()) {
+                public void handleMessage(Message msg) {
+                    try {
+                        char key = (char) msg.arg1;
+                        Log.d("SendThread", "key='"+key+"'["+(int) key+"]");
+                        if (key == 'S') {
+                            if (connectServer() == false) {
+                                sendToMain('A'); // issue 'Abort' command
+                                return;
+                            }
+                        }
+
+                        synchronized(socketReady) {
+                            if (outStream != null) {
+                                Log.d("SendThread", "wrote key='" + key + "'[" + (int) key + "]");
+                                outStream.writeByte(key);
+                                outStream.writeByte('\n');
+                            }
+                        }
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            Looper.loop(); // The message loop runs.
+        }
+    };
+    private Runnable runnable4RecvThread = new Runnable() { // runnable for RecvThread
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    char key;
+                    synchronized (inStreamReady) {
+                        while (inStream == null) inStreamReady.wait();
+                    }
+                    while ((key = (char) inStream.readByte()) != 'Q') {
+                        if (key != '\n') // skip the newline character
+                            sendToMain(key);
+                    }
+                    sendToMain(key); // key == 'Q'
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    runOnUiThread(() -> {
+                        Toast.makeText(MainActivity.this, "서버 연결이 끊어졌습니다. 시작 화면으로 돌아갑니다.", Toast.LENGTH_SHORT).show();
+                        finish(); // 현재 게임 화면 종료
+                    });
+                }
+                disconnectServer();
+            }
+        }
+    };
+    private Handler handler4MainThread = new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
+            try {
+                char key = (char) msg.arg1;
+                Log.d("MainThread", "key: " + key);
+                //mirrorPeer(key);
+                switch (key) {
+                    case 'U':
+                        opponent_game.onTouchAccept("UP");
+                        break;
+                    case 'D': opponent_game.onTouchAccept("DOWN"); break;
+                    case 'L': opponent_game.onTouchAccept("LEFT"); break;
+                    case 'R': opponent_game.onTouchAccept("RIGHT"); break;
+                    case 'S': opponent_game.timer.startTimer(); break;
+                    case 'A':
+                        Log.d("server", "aborted");
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 }
